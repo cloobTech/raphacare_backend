@@ -13,7 +13,7 @@ user_dict = {
     "password": "hashed_password",
     "first_name": "John",
     "last_name": "Doe",
-    "user_type": UserType.MEDICAL_PRACTITIONER,
+    "user_type": UserType.medical_practitioner,
     "reset_token": None,
     "token_created_at": None,
     "email_verified": False,
@@ -25,7 +25,7 @@ patient_dict = {
     "emergency_contact": "12345568",
     "user_name": "JaneDoe",
     "phone_number": "1234567890",
-    "gender": Gender.FEMALE,
+    "gender": Gender.female,
     "address": "123 Main St",
     "city": "Anytown",
     "state": "Anystate",
@@ -37,7 +37,7 @@ patient_dict = {
 medical_practitioner_dict = {
     "user_id": "user_id_value",
     "phone_number": "1234567890",
-    "practitioner_type": PractitionerType.DOCTOR,
+    "practitioner_type": PractitionerType.doctor,
     "specialization": "Cardiology",
     "license_number": "license_number_value",
     "is_verified": False,
@@ -69,6 +69,22 @@ async def create_new_medical_practitioner():
 #     await user.save()
 
 
+async def reload_db():
+    """ Main function """
+    await db.drop_all()
+    await db.reload()
+    print("Database reloaded")
+
 # asyncio.run(main())
 # asyncio.run(create_new_patient())
-asyncio.run(create_new_medical_practitioner())
+# asyncio.run(create_new_medical_practitioner())
+asyncio.run(reload_db())
+    
+# async def find_user_by_email():
+
+#     x = await db.find_by(User, id="1f29c47c-af52-4a58-889b-e180c62a837f")
+#     print(x)
+
+
+# asyncio.run(find_user_by_email())
+

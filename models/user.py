@@ -8,11 +8,11 @@ from utils.hash_password import hash_password
 from models.base_model import BaseModel, Base
 
 
-class UserType(pyEnum):
+class UserType(str, pyEnum):
     """ User Type Enum """
-    ADMIN = 'admin'
-    MEDICAL_PRACTITIONER = 'medical_practitioner'
-    PATIENT = 'patient'
+    admin = 'admin'
+    medical_practitioner = 'medical_practitioner'
+    patient = 'patient'
 
 
 class User(BaseModel, Base):
@@ -22,8 +22,6 @@ class User(BaseModel, Base):
     email: Mapped[str] = mapped_column(String(60), nullable=False, unique=True)
     password: Mapped[str] = mapped_column(
         String(60), nullable=True)
-    first_name: Mapped[str] = mapped_column(String(60), nullable=False)
-    last_name: Mapped[str] = mapped_column(String(60), nullable=False)
     user_type: Mapped[str] = mapped_column(
         Enum(UserType), nullable=False)
     reset_token: Mapped[str | None] = mapped_column(

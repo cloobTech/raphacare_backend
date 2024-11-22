@@ -6,9 +6,9 @@ from models.base_model import BaseModel, Base
 
 class PractitionerType(PyEnum):
     """Practitioner Type Enum"""
-    DOCTOR = "doctor"
-    NURSE = "nurse"
-    COMMUNITY_HEALTH = "community_health"
+    doctor = "doctor"
+    nurse = "nurse"
+    community_health = "community_health"
 
 
 class MedicalPractitioner(BaseModel, Base):
@@ -17,8 +17,11 @@ class MedicalPractitioner(BaseModel, Base):
 
     user_id: Mapped[str] = mapped_column(
         String(60), ForeignKey("users.id"), nullable=False)
+    first_name: Mapped[str] = mapped_column(String(60), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(60), nullable=False)
+    other_names: Mapped[str] = mapped_column(String(60), nullable=True)
     phone_number: Mapped[str] = mapped_column(String(60), nullable=False)
-    practitioner_type: Mapped[PractitionerType] = mapped_column(
+    practitioner_type: Mapped[str] = mapped_column(
         Enum(PractitionerType), nullable=False)
     specialization: Mapped[str] = mapped_column(String(60), nullable=True)
     license_number: Mapped[str] = mapped_column(String(60), nullable=True)

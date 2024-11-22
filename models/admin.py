@@ -16,6 +16,9 @@ class Admin(BaseModel, Base):
 
     user_id: Mapped[str] = mapped_column(
         String(60), ForeignKey("users.id"), nullable=False)
+    first_name: Mapped[str] = mapped_column(String(60), nullable=False)
+    last_name: Mapped[str] = mapped_column(String(60), nullable=False)
+    other_names: Mapped[str] = mapped_column(String(60), nullable=True)
     type: Mapped[str] = mapped_column(
         Enum(AdminType), nullable=False, default=AdminType.NORMAL)
 

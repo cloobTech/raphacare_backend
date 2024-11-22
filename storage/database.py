@@ -2,7 +2,7 @@ from typing import AsyncGenerator, Type, Any
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy import select
 from sqlalchemy.sql.expression import BinaryExpression
-from models import user, patient, medical_history, medical_practitioner
+from models import user, patient, medical_history, medical_practitioner, admin
 from models.base_model import Base
 
 
@@ -14,6 +14,7 @@ class DBStorage:
         "Patient": patient.Patient,
         "MedicalPractitioner": medical_practitioner.MedicalPractitioner,
         "MedicalHistory": medical_history.MedicalHistory,
+        "Admin": admin.Admin
 
     }
 
