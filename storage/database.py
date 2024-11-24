@@ -46,6 +46,10 @@ class DBStorage:
     async def new(self, obj: Type[Base]):
         """Add objects to the current database session"""
         async for session in self._session():
+            if session.object_session(obj):
+                print("Object already in session")
+            else:
+                print("Object not in session")
             session.add(obj)
 
     async def save(self):

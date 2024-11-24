@@ -20,7 +20,7 @@ class MedicalPractitioner(BaseModel, Base):
     first_name: Mapped[str] = mapped_column(String(60), nullable=False)
     last_name: Mapped[str] = mapped_column(String(60), nullable=False)
     other_names: Mapped[str] = mapped_column(String(60), nullable=True)
-    phone_number: Mapped[str] = mapped_column(String(60), nullable=False)
+    phone_number: Mapped[str] = mapped_column(String(60), nullable=True)
     practitioner_type: Mapped[str] = mapped_column(
         Enum(PractitionerType), nullable=False)
     specialization: Mapped[str] = mapped_column(String(60), nullable=True)
@@ -30,6 +30,6 @@ class MedicalPractitioner(BaseModel, Base):
     is_available: Mapped[bool] = mapped_column(nullable=False, default=True)
 
     user: Mapped['User'] = relationship(
-        back_populates="medical_practitioner", uselist=False)
+        back_populates="medical_practitioner", lazy="selectin", uselist=False)
     medical_histories: Mapped[list['MedicalHistory']] = relationship(
         back_populates="medical_practitioner")

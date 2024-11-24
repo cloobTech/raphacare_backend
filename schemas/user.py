@@ -43,7 +43,7 @@ class MedicalPractitionerProfileDetails(BaseModel):
     last_name: str
     other_names: str | None = None
     phone_number: str | None = None
-    practitioner_type: PractitionerType
+    practitioner_type: PractitionerType | None = None
     specialization: str | None = None
     license_number: str | None = None
     is_verified: bool = False

@@ -34,6 +34,6 @@ class Patient(BaseModel, Base):
     date_of_birth: Mapped[datetime] = mapped_column(nullable=True)
 
     user: Mapped['User'] = relationship(
-        back_populates="patient", uselist=True)
+        back_populates="patient", lazy="selectin", uselist=True)
     medical_histories: Mapped[list['MedicalHistory']] = relationship(
         back_populates="patient")

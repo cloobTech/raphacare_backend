@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routes import auth
+from .routes import auth, patient, medical_practitioner
 
 app = FastAPI()
 
@@ -22,8 +22,8 @@ app.add_middleware(
 
 # MiddleWare
 app.include_router(auth.router)
-# app.include_router(study.router)
-# app.include_router(screener.router)
+app.include_router(patient.router)
+app.include_router(medical_practitioner.router)
 
 
 @app.get("/")

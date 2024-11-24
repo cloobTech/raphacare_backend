@@ -2,7 +2,7 @@ from datetime import datetime
 import bcrypt
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
-from errors.custome_errors import UserAlreadyExistsError, UserDisabledError, EmailNotVerifiedError
+from errors.custome_errors import UserAlreadyExistsError, UserDisabledError
 from storage import DBStorage
 from models.user import User
 from models.medical_practitioner import MedicalPractitioner
