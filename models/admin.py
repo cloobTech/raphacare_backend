@@ -4,10 +4,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models.base_model import BaseModel, Base
 
 
-class AdminType(pyEnum):
+class AdminType(str, pyEnum):
     """Admin Type Enum"""
-    SUPER = "super"
-    NORMAL = "normal"
+    super = "super"
+    normal = "normal"
 
 
 class Admin(BaseModel, Base):
@@ -20,7 +20,7 @@ class Admin(BaseModel, Base):
     last_name: Mapped[str] = mapped_column(String(60), nullable=False)
     other_names: Mapped[str] = mapped_column(String(60), nullable=True)
     type: Mapped[str] = mapped_column(
-        Enum(AdminType), nullable=False, default=AdminType.NORMAL)
+        Enum(AdminType), nullable=False, default=AdminType.normal)
 
     user: Mapped['User'] = relationship(
         back_populates="admin", uselist=False)

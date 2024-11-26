@@ -15,9 +15,9 @@ class AppointmentStatus(str, PyEnum):
 
 class AppointmentType(str, PyEnum):
     """Appointment Type Class"""
-    ONLINE = "online"
-    PHYSICAL = "physical"
-    HOME_SERVICE = "home_service"
+    online = "online"
+    physical = "physical"
+    home_service = "home_service"
 
 
 class Appointment(BaseModel, Base):
@@ -32,7 +32,7 @@ class Appointment(BaseModel, Base):
     appointment_status: Mapped[str] = mapped_column(
         Enum(AppointmentStatus), default=AppointmentStatus.pending, nullable=False)
     appointment_type: Mapped[str] = mapped_column(
-        Enum(AppointmentType), default=AppointmentType.PHYSICAL, nullable=False)
+        Enum(AppointmentType), default=AppointmentType.online, nullable=False)
     appointment_reason: Mapped[str] = mapped_column(Text, nullable=False)
     appointment_note: Mapped[str] = mapped_column(Text, nullable=True)
 
