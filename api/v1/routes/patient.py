@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from errors.custome_errors import EntityNotFoundError, DataRequiredError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
-from services.user.patient import get_patient_by_id, get_all_patients, update_patient_info
+from services.users.patient import get_patient_by_id, get_all_patients, update_patient_info
 
 
 router = APIRouter(tags=['Patient'], prefix='/api/v1/patients')

@@ -37,3 +37,5 @@ class Patient(BaseModel, Base):
         back_populates="patient", lazy="selectin", uselist=True)
     medical_histories: Mapped[list['MedicalHistory']] = relationship(
         back_populates="patient")
+    appointments: Mapped[list['Appointment']] = relationship(
+       lazy="selectin", back_populates="patient")

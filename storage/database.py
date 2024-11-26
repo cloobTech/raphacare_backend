@@ -1,8 +1,9 @@
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Type, Any
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy import select
 from sqlalchemy.sql.expression import BinaryExpression
-from models import user, patient, medical_history, medical_practitioner, admin
+from models import user, patient, medical_history, medical_practitioner, admin, appointment
 from models.base_model import Base
 
 
@@ -10,11 +11,12 @@ class DBStorage:
     """ Database storage class """
 
     MODELS = {
+        "Admin": admin.Admin,
         "User": user.User,
         "Patient": patient.Patient,
         "MedicalPractitioner": medical_practitioner.MedicalPractitioner,
         "MedicalHistory": medical_history.MedicalHistory,
-        "Admin": admin.Admin
+        "Appointment": appointment.Appointment
 
     }
 
@@ -26,6 +28,31 @@ class DBStorage:
         self.__engine = create_async_engine(db_uri, echo=False)
         self.__session_maker = async_sessionmaker(
             self.__engine, expire_on_commit=False)
+        
+        _current_session: AsyncSession | None = None
+        
+    # @asynccontextmanager
+    # async def context(self):
+    #     """Provide contextual access to DBStorage."""
+    #     try:
+    #         await self.reload()
+    #         yield self
+    #     finally:
+    #         await self.shutdown_db()
+    
+    @asynccontextmanager
+    async def context(self) -> AsyncGenerator["DBStorage", None]:
+        """Provide a storage instance with a temporary session."""
+        async for session in self._session():
+            self._current_session = session
+            try:
+                yield self  # Yield the instance, not the session
+            except Exception as e:
+                await session.rollback()
+                raise e
+            finally:
+                self._current_session = None
+                await session.close()
 
     async def _session(self) -> AsyncGenerator[AsyncSession, None]:
         """Create and return a session object"""
@@ -46,10 +73,6 @@ class DBStorage:
     async def new(self, obj: Type[Base]):
         """Add objects to the current database session"""
         async for session in self._session():
-            if session.object_session(obj):
-                print("Object already in session")
-            else:
-                print("Object not in session")
             session.add(obj)
 
     async def save(self):

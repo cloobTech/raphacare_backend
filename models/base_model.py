@@ -7,7 +7,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 # List of date fields
-date_fields = ['token_created_at']
+date_fields = ['token_created_at', 'appointment_date']
 
 # format for datetime used within the app
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"

@@ -33,3 +33,6 @@ class MedicalPractitioner(BaseModel, Base):
         back_populates="medical_practitioner", lazy="selectin", uselist=False)
     medical_histories: Mapped[list['MedicalHistory']] = relationship(
         back_populates="medical_practitioner")
+    appointments: Mapped[list['Appointment']] = relationship(
+        lazy="selectin",
+        back_populates="medical_practitioner")

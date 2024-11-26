@@ -71,7 +71,7 @@ async def create_new_medical_practitioner():
 
 async def reload_db():
     """ Main function """
-    await db.drop_all()
+    # await db.drop_all()
     await db.reload()
     print("Database reloaded")
 

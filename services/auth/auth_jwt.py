@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import InvalidRequestError
 from settings.pydantic_config import settings
 from schemas.auth import TokenResponse
-from services.user.user_management import validate_email_and_password, get_user_by_email, check_user_status, verify_password
+from services.users.user_management import validate_email_and_password, get_user_by_email, check_user_status, verify_password
 
 
 def create_access_token(data: dict) -> str:

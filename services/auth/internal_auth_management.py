@@ -17,7 +17,7 @@ from schemas.auth import RegisterUser, RequestResetToken, TokenResponse, VerifyE
 from schemas.default_response import DefaultResponse
 from services.auth.auth_base import AuthStrategy
 from services.auth.auth_jwt import valid_login
-from services.user.user_management import check_user_existence, create_user, create_user_profile
+from services.users.user_management import check_user_existence, create_user, create_user_profile
 from storage.database import DBStorage
 from utils.generate_token import generate_token
 
