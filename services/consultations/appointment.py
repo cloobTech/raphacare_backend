@@ -4,7 +4,7 @@ from models.appointment import Appointment
 from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
-from services.appointments.helpers import is_slot_available
+from services.consultations.helpers import is_slot_available
 
 
 async def get_appointment_by_id(appointment_id: str, storage: DB) -> DefaultResponse:

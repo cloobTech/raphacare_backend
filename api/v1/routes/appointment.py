@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from errors.custome_errors import EntityNotFoundError, DataRequiredError, AppointmentSlotNotAvailableError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
-from services.appointments.appointment import get_appointment_by_id, get_all_appointments, create_appointment, update_appointment_info
+from services.consultations.appointment import get_appointment_by_id, get_all_appointments, create_appointment, update_appointment_info
 
 
 router = APIRouter(tags=['Appointment'], prefix='/api/v1/appointments')
