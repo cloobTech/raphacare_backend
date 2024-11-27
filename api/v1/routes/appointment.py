@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from errors.custome_errors import EntityNotFoundError, DataRequiredError
+from errors.custome_errors import EntityNotFoundError, DataRequiredError, AppointmentSlotNotAvailableError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
 from services.appointments.appointment import get_appointment_by_id, get_all_appointments, create_appointment, update_appointment_info
@@ -43,6 +43,9 @@ async def create_appointment_route(data: dict, storage=Depends(get_db_session)):
     except EntityNotFoundError as e:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+    except AppointmentSlotNotAvailableError as e:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e

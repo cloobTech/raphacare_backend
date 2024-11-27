@@ -96,11 +96,14 @@ class DBStorage:
                 return result
         return None
 
-    async def filter(self, cls: Type[Base], *args: BinaryExpression) -> dict:
+    async def filter(self, cls: Type[Base], *args: BinaryExpression, fetch_one: bool = False,) -> dict:
         """retrieves all objects based on a class name and kwargs (class attribute)"""
         objects = {}
         async for session in self._session():
             query_result = await session.execute(select(cls).filter(*args))
+            if fetch_one:  # Fetch a single object
+                result = query_result.scalars().first()
+                return result
             result = query_result.scalars().all()
             for obj in result:
                 obj_reference = f'{type(obj).__name__}.{obj.id}'

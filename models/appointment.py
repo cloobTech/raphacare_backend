@@ -28,7 +28,8 @@ class Appointment(BaseModel, Base):
         String(60), ForeignKey("patients.id"), nullable=False)
     medical_practitioner_id: Mapped[str] = mapped_column(
         String(60), ForeignKey("medical_practitioners.id"), nullable=False)
-    appointment_date: Mapped[datetime] = mapped_column(nullable=False)
+    appointment_start_time: Mapped[datetime] = mapped_column(nullable=False)
+    appointment_end_time: Mapped[datetime] = mapped_column(nullable=False)
     appointment_status: Mapped[str] = mapped_column(
         Enum(AppointmentStatus), default=AppointmentStatus.pending, nullable=False)
     appointment_type: Mapped[str] = mapped_column(

@@ -1,9 +1,10 @@
-from errors.custome_errors import EntityNotFoundError, DataRequiredError
+from errors.custome_errors import EntityNotFoundError, DataRequiredError, AppointmentSlotNotAvailableError
 from storage import DBStorage as DB
 from models.appointment import Appointment
 from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
+from services.appointments.helpers import is_slot_available
 
 
 async def get_appointment_by_id(appointment_id: str, storage: DB) -> DefaultResponse:
@@ -45,9 +46,17 @@ async def create_appointment(data: dict, storage: DB) -> DefaultResponse:
     medical_practitioner = await storage.get(MedicalPractitioner, data['medical_practitioner_id'])
     if not medical_practitioner:
         raise EntityNotFoundError('Medical practitioner not found')
+    filter_data = {
+        "medical_practitioner_id": data['medical_practitioner_id'],
+        "appointment_start_time": data['appointment_start_time'],
+        "appointment_end_time": data['appointment_end_time']
+    }
+    if not await is_slot_available(storage, filter_data):
+        raise AppointmentSlotNotAvailableError("Slot is not available")
     await storage.merge(medical_practitioner)
     await storage.merge(patient)
-    appointment = Appointment(**data, patient=patient, medical_practitioner=medical_practitioner)
+    appointment = Appointment(**data, patient=patient,
+                              medical_practitioner=medical_practitioner)
     await appointment.save()
     return DefaultResponse(
         status="success",

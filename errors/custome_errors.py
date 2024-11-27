@@ -31,3 +31,8 @@ class EntityNotFoundError(Exception):
 class DataRequiredError(Exception):
     """Raised when data is required"""
     pass
+
+
+class AppointmentSlotNotAvailableError(Exception):
+    """Raised when the appointment slot is not available"""
+    pass
