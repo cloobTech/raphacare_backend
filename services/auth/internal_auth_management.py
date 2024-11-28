@@ -86,7 +86,7 @@ class LocalAuthStrategy(AuthStrategy):
             raise NoResultFound("User Not Found!")
         await storage.merge(user)
 
-        # # Save the token in your database
+        # Save the token in your database
         # await user.update({"reset_token": generate_token(), "token_created_at": datetime.now()})
         await user.update({"reset_token": "123456", "token_created_at": datetime.now()})
 

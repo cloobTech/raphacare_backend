@@ -17,7 +17,6 @@ def create_prescription_from_list(data: list, consultation: Consultation):
         create_prescription(item, consultation)
 
 
-
 async def get_prescription_by_id(prescription_id: str, storage: DB) -> DefaultResponse:
     """Get prescription by id"""
     prescription = await storage.get(Prescription, prescription_id)

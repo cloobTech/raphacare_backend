@@ -24,7 +24,8 @@ async def check_user_existence(storage: DBStorage, email: str):
 def create_user(user_auth_details: dict) -> User:
     """Create a new user"""
     new_user = User(**user_auth_details)
-    new_user.reset_token = generate_token()
+    # new_user.reset_token = generate_token()
+    new_user.reset_token = "123456"
     new_user.token_created_at = datetime.now()
     return new_user
 

@@ -17,7 +17,7 @@ async def create_consultation(consultaion_schema_data: CC, storage: DB) -> Defau
         raise EntityNotFoundError('Appointment not found')
     consultation = Consultation(**data, appointment=appointment)
     if is_prescription_included is True:
-            create_prescription_from_list(prescription_data, consultation)
+        create_prescription_from_list(prescription_data, consultation)
     await storage.merge(consultation)
     await consultation.save()
     return DefaultResponse(
