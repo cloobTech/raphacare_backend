@@ -15,4 +15,4 @@ class Prescription(BaseModel, Base):
     note: Mapped[str] = mapped_column(Text, nullable=True)
 
     consultation: Mapped['Consultation'] = relationship(
-        back_populates="prescription",  uselist=False)
+        back_populates="prescriptions",  uselist=False)

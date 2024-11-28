@@ -41,3 +41,5 @@ class Appointment(BaseModel, Base):
         back_populates="appointments",  uselist=False)
     medical_practitioner: Mapped['MedicalPractitioner'] = relationship(
         back_populates="appointments",  uselist=False)
+    consultation: Mapped['Consultation'] = relationship(
+        back_populates="appointment",  uselist=False)

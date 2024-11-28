@@ -5,7 +5,7 @@ from models.user import User, UserType
 from models.patient import Patient, Gender
 from models.medical_practitioner import PractitionerType, MedicalPractitioner
 from models.appointment import Appointment, AppointmentStatus, AppointmentType
-from services.appointments.helpers import is_slot_available
+from services.consultations.helpers import is_slot_available
 
 db = DBStorage()
 
@@ -97,4 +97,4 @@ async def reload_db():
 # asyncio.run(create_new_patient())
 # asyncio.run(create_new_medical_practitioner())
 asyncio.run(reload_db())
-asyncio.run(check_slot_availability())
+# asyncio.run(check_slot_availability())
