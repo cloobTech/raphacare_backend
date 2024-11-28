@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import InvalidRequestError
 from settings.pydantic_config import settings
 from schemas.auth import TokenResponse
-from services.users.user_management import validate_email_and_password, get_user_by_email, check_user_status, verify_password
+from services.users.user_management import get_user_by_email, check_user_status, verify_password
 
 
 def create_access_token(data: dict) -> str:
@@ -57,13 +57,13 @@ def create_refresh_tokens(refresh_token: str, credential_exceptions) -> TokenRes
 
 async def valid_login(email: str, password: str | bytes, storage: AsyncSession) -> TokenResponse:
     """Validate a user's credentials"""
-    validate_email_and_password(email, password)
     user = await get_user_by_email(email, storage)
     check_user_status(user)
     if not verify_password(user, password):
         raise InvalidRequestError("Invalid Email or Password")
     data_to_encode = {"user_id": user.id,
-                      "user_type": user.user_type}
+                      "user_type": user.user_type,
+                      "profile_id": user.user_profile_id}
     token = create_access_token(data_to_encode)
     refresh_token = create_refresh_token(data_to_encode)
     return TokenResponse(access_token=token, refresh_token=refresh_token, token_type="Bearer")

@@ -37,14 +37,6 @@ def create_user_profile(new_user: User, user_profile_details: dict) -> Patient |
     return MedicalPractitioner(**user_profile_details, user=new_user)
 
 
-def validate_email_and_password(email: str, password: str | bytes) -> None:
-    """Validate Email and Password"""
-    if not email or not isinstance(email, str):
-        raise InvalidRequestError("Invalid Email Format")
-    if not password or not isinstance(password, (str, bytes)):
-        raise InvalidRequestError("Invalid Password Format")
-
-
 async def get_user_by_email(email: str, storage: DBStorage) -> User:
     """Get a user by email"""
     try:

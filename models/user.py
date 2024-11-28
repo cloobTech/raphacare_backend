@@ -29,6 +29,8 @@ class User(BaseModel, Base):
     token_created_at: Mapped[datetime] = mapped_column(nullable=True)
     email_verified: Mapped[bool] = mapped_column(nullable=False, default=False)
     disabled: Mapped[bool] = mapped_column(nullable=False, default=False)
+    user_profile_id: Mapped[str] = mapped_column(
+        nullable=True)
 
     patient: Mapped['Patient'] = relationship(
         back_populates="user", uselist=False, cascade="all, delete-orphan")

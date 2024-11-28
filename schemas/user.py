@@ -12,6 +12,7 @@ class UserType(str, Enum):
     medical_practitioner = 'medical_practitioner'
     patient = 'patient'
 
+
 class UserAuthDetails(BaseModel):
     """User Authentication Details"""
     email: EmailStr
@@ -21,6 +22,7 @@ class UserAuthDetails(BaseModel):
     token_created_at: datetime | None = None
     email_verified: bool = False
     disabled: bool = False
+    user_profile_id: str | None = None
     auth_type: str = "local"
 
     class Config:

@@ -43,6 +43,7 @@ class LocalAuthStrategy(AuthStrategy):
         await check_user_existence(storage, user_auth_details.get('email'))
         new_user = create_user(user_auth_details)
         new_user_profile = create_user_profile(new_user, user_profile_details)
+        new_user.user_profile_id = new_user_profile.id
 
         await new_user_profile.save()
 
