@@ -5,6 +5,7 @@ from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
 from services.consultations.helpers import is_slot_available
+from services.messaging.notifications.helper import new_pending_appointment, confirmed_rejected_completed_appointment
 
 
 async def get_appointment_by_id(appointment_id: str, storage: DB) -> DefaultResponse:
@@ -57,7 +58,11 @@ async def create_appointment(data: dict, storage: DB) -> DefaultResponse:
     await storage.merge(patient)
     appointment = Appointment(**data, patient=patient,
                               medical_practitioner=medical_practitioner)
+
     await appointment.save()
+    # Create new pending appointment notification
+    await new_pending_appointment(appointment, storage)
+
     return DefaultResponse(
         status="success",
         message="Appointment created successfully",
@@ -74,6 +79,9 @@ async def update_appointment_info(appointment_id: str, data: dict, storage: DB) 
         raise DataRequiredError("Data to update is required")
     await storage.merge(appointment)
     await appointment.update(data)
+    # Create confirmed/rejected/completed appointment notification
+    if 'appointment_status' in data:
+        await confirmed_rejected_completed_appointment(appointment, storage)
     return DefaultResponse(
         status="success",
         message="Appointment data updated successfully",

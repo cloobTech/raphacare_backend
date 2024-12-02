@@ -2,7 +2,7 @@ from datetime import datetime
 import bcrypt
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
-from errors.custome_errors import UserAlreadyExistsError, UserDisabledError
+from errors.custome_errors import UserAlreadyExistsError, UserDisabledError, EmailNotVerifiedError
 from storage import DBStorage
 from models.user import User
 from models.medical_practitioner import MedicalPractitioner
@@ -54,8 +54,8 @@ def check_user_status(user: User):
         raise NoResultFound("Password Field Empty!")
     if user.disabled:
         raise UserDisabledError("User is Disabled")
-    # if not user.email_verified:
-    #     raise EmailNotVerifiedError("Email Not Verified")
+    if not user.email_verified:
+        raise EmailNotVerifiedError("Email Not Verified")
 
 
 def verify_password(user: User, password: str | bytes) -> bool:

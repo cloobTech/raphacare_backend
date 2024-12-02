@@ -53,7 +53,7 @@ async def update_consultation(consultation_id: str, consultation_data: dict, sto
     return DefaultResponse(
         status="success",
         message="Consultation updated successfully",
-        data=consultation_data
+        data=consultation.to_dict()
     )
 
 

@@ -36,6 +36,7 @@ class Appointment(BaseModel, Base):
         Enum(AppointmentType), default=AppointmentType.online, nullable=False)
     appointment_reason: Mapped[str] = mapped_column(Text, nullable=False)
     appointment_note: Mapped[str] = mapped_column(Text, nullable=True)
+    is_paid: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     patient: Mapped['Patient'] = relationship(
         back_populates="appointments",  uselist=False)

@@ -42,7 +42,7 @@ async def update_prescription(prescription_id: str, prescription_data: dict, sto
     return DefaultResponse(
         status="success",
         message="Prescription updated successfully",
-        data=prescription_data
+        data=prescription.to_dict()
     )
 
 
