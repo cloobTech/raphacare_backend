@@ -32,6 +32,8 @@ class Patient(BaseModel, Base):
     state: Mapped[str] = mapped_column(String(60), nullable=True)
     country: Mapped[str] = mapped_column(String(60), nullable=True)
     date_of_birth: Mapped[datetime] = mapped_column(nullable=True)
+    profile_picture_url: Mapped[str] = mapped_column(nullable=True)
+
 
     user: Mapped['User'] = relationship(
         back_populates="patient", lazy="selectin", uselist=True)
@@ -39,3 +41,5 @@ class Patient(BaseModel, Base):
         back_populates="patient")
     appointments: Mapped[list['Appointment']] = relationship(
        lazy="selectin", back_populates="patient")
+    subscription: Mapped[list['Subscription']] = relationship(
+        back_populates="patient")

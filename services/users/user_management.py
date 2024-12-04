@@ -5,6 +5,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from errors.custome_errors import UserAlreadyExistsError, UserDisabledError, EmailNotVerifiedError
 from storage import DBStorage
 from models.user import User
+from models.admin import Admin
 from models.medical_practitioner import MedicalPractitioner
 from models.patient import Patient
 from utils.generate_token import generate_token
@@ -34,6 +35,8 @@ def create_user_profile(new_user: User, user_profile_details: dict) -> Patient |
     """Create a new user profile"""
     if new_user.user_type == "patient":
         return Patient(**user_profile_details, user=new_user)
+    if new_user.user_type == "admin":
+        return Admin(**user_profile_details, user=new_user)
     return MedicalPractitioner(**user_profile_details, user=new_user)
 
 

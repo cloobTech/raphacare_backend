@@ -1,6 +1,7 @@
 from errors.custome_errors import EntityNotFoundError, DataRequiredError
 from storage import DBStorage
 from models.patient import Patient
+from services.users.patients.helper import upload_file
 
 from schemas.default_response import DefaultResponse
 
@@ -50,4 +51,14 @@ async def update_patient_info(patient_id: str, data: dict, storage: DBStorage) -
         status="success",
         message="Patient data updated successfully",
         data=patient.to_dict()
+    )
+
+
+async def generic_file_upload(patient_id: str,  resource_type, file, storage) -> DefaultResponse:
+    """Generic file upload"""
+    upated_patient_data = await upload_file(patient_id,  resource_type, file, storage)
+    return DefaultResponse(
+        status="success",
+        message="File uploaded successfully",
+        data=upated_patient_data.to_dict()
     )

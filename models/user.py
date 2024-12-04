@@ -40,6 +40,8 @@ class User(BaseModel, Base):
         back_populates="user", uselist=False, cascade="all, delete-orphan")
     notifications: Mapped[list['Notification']] = relationship(
         back_populates="user", cascade="all, delete-orphan")
+    payments: Mapped[list['Payment']] = relationship(
+        back_populates="user", cascade="all, delete-orphan")
 
     def __init__(self, *args, **kwargs):
         """

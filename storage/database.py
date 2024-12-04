@@ -1,9 +1,10 @@
-from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Type, Any
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy import select
 from sqlalchemy.sql.expression import BinaryExpression
-from models import user, patient, medical_history, medical_practitioner, admin, appointment, consultation, prescription, notification
+from models import (medical_service, user, patient, medical_history,
+                    medical_practitioner, admin, appointment, consultation, prescription, notification, subscription, payment)
 from models.base_model import Base
 
 
@@ -19,11 +20,15 @@ class DBStorage:
         "Appointment": appointment.Appointment,
         "Consultation": consultation.Consultation,
         "Prescriptions": prescription.Prescription,
-        "Notification": notification.Notification
+        "Notification": notification.Notification,
+        "Service": medical_service.Service,
+        "Subscription": subscription.Subscription,
+        "Payment": payment.Payment
 
     }
 
     __engine = None
+    __session_maker = None
 
     def __init__(self, db_uri: str = 'sqlite+aiosqlite:///db.sqlite3'):
         """ Initialize the database storage class """
@@ -31,33 +36,16 @@ class DBStorage:
         self.__engine = create_async_engine(db_uri, echo=False)
         self.__session_maker = async_sessionmaker(
             self.__engine, expire_on_commit=False)
-        
-        _current_session: AsyncSession | None = None
-        
-    # @asynccontextmanager
-    # async def context(self):
-    #     """Provide contextual access to DBStorage."""
-    #     try:
-    #         await self.reload()
-    #         yield self
-    #     finally:
-    #         await self.shutdown_db()
-    
-    @asynccontextmanager
-    async def context(self) -> AsyncGenerator["DBStorage", None]:
-        """Provide a storage instance with a temporary session."""
-        async for session in self._session():
-            self._current_session = session
-            try:
-                yield self  # Yield the instance, not the session
-            except Exception as e:
-                await session.rollback()
-                raise e
-            finally:
-                self._current_session = None
-                await session.close()
 
     async def _session(self) -> AsyncGenerator[AsyncSession, None]:
+        """Create and return a session object"""
+        async with self.__session_maker() as session:
+            async with session.begin():
+                yield session
+
+
+
+    async def db_session(self) -> AsyncGenerator[AsyncSession, None]:
         """Create and return a session object"""
         async with self.__session_maker() as session:
             async with session.begin():
@@ -78,10 +66,27 @@ class DBStorage:
         async for session in self._session():
             session.add(obj)
 
-    async def save(self):
-        """Commit all changes of the current database session"""
-        async for session in self._session():
+    # async def save(self):
+    #     """Commit all changes of the current database session"""
+    #     async for session in self._session():
+    #         await session.commit()
+            
+    async def save(self, session: AsyncSession = None):
+        """Commit all changes of the current database session."""
+        if not session:
+            async for session in self._session():
+                await session.commit()
+        else:
             await session.commit()
+
+
+    async def rollback(self, session: AsyncSession = None):
+        """Roll back the current database session."""
+        if not session:
+            async for session in self._session():
+                await session.rollback()
+        else:
+            await session.rollback()
 
     async def delete(self, obj: Type[Base | None] = None):
         """Delete an object from the current database session if not None"""
@@ -118,10 +123,10 @@ class DBStorage:
         async for session in self._session():
             await session.close()
 
-    async def rollback(self):
-        """Roll back current DB session"""
-        async for session in self._session():
-            await session.rollback()
+    # async def rollback(self):
+    #     """Roll back current DB session"""
+    #     async for session in self._session():
+    #         await session.rollback()
 
     async def merge(self, obj: Type[Base]):
         """Merge the current session with the object"""
@@ -129,37 +134,56 @@ class DBStorage:
             merged_obj = await session.merge(obj)
             return merged_obj
 
+
     async def all(self, cls: Type[Base] | None = None) -> dict:
-        """Query on the current database session all objects"""
+        """Query all objects of a specific class or all models."""
         objects = {}
-        if cls is not None:
-            try:
-                async for session in self._session():
+        try:
+            async for session in self._session():
+                # If a class is provided, query only that class
+                if cls is not None:
                     result = await session.execute(select(cls))
                     result = result.scalars().all()
                     for obj in result:
                         obj_reference = f'{type(obj).__name__}.{obj.id}'
                         objects[obj_reference] = obj
                     return objects
-            except Exception:
-                pass
-        else:
-            for model in self.MODELS.values():
-                async for session in self._session():
+
+                # If no class is provided, query all models in MODELS
+                for model in self.MODELS.values():
                     result = await session.execute(select(model))
                     result = result.scalars().all()
                     for obj in result:
                         obj_reference = f'{type(obj).__name__}.{obj.id}'
                         objects[obj_reference] = obj
-            return objects
 
-    async def get(self, cls: Type[Base], obj_id: str) -> dict | None:
-        """retrieves one object based on a class name and obj_id"""
+        except Exception as e:
+            # Log the exception for debugging
+            print(f"Error in `all` method: {e}")
+
+        return objects
+
+    async def get(self, cls: Type[Base], obj_id: str) -> Base | None:
+        """Retrieve a single object by its class and ID."""
         if cls and obj_id:
-            dict_key = f'{cls.__name__}.{obj_id}'
-            all_obj = await self.all(cls)
-            return all_obj.get(dict_key)
+            try:
+                async for session in self._session():
+                    result = await session.execute(select(cls).filter(cls.id == obj_id))
+                    return result.scalar_one_or_none()  # Returns exactly one object or None
+            except Exception as e:
+                # Log the exception for debugging
+                print(f"Error in `get` method: {e}")
+
         return None
+
+  
+    # async def get(self, cls: Type[Base], obj_id: str) -> dict | None:
+    #     """retrieves one object based on a class name and obj_id"""
+    #     if cls and obj_id:
+    #         dict_key = f'{cls.__name__}.{obj_id}'
+    #         all_obj = await self.all(cls)
+    #         return all_obj.get(dict_key)
+    #     return None
 
     def count(self, cls: Type[Base] | None = None) -> int:
         """Return the count of all objects in storage"""

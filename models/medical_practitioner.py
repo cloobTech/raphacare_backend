@@ -4,11 +4,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from models.base_model import BaseModel, Base
 
 
-class PractitionerType(PyEnum):
+class PractitionerType(str, PyEnum):
     """Practitioner Type Enum"""
-    doctor = "doctor"
-    nurse = "nurse"
-    community_health = "community_health"
+    DOCTOR = "doctor"
+    NURSE = "nurse"
+    COMMUNITY_HEALTH = "community_health"
 
 
 class MedicalPractitioner(BaseModel, Base):
@@ -28,6 +28,7 @@ class MedicalPractitioner(BaseModel, Base):
     is_verified: Mapped[bool] = mapped_column(nullable=False, default=False)
     availability: Mapped[dict] = mapped_column(JSON, nullable=True)
     is_available: Mapped[bool] = mapped_column(nullable=False, default=True)
+    profile_picture_url: Mapped[str] = mapped_column(nullable=True)
 
     user: Mapped['User'] = relationship(
         back_populates="medical_practitioner", lazy="selectin", uselist=False)
@@ -36,3 +37,5 @@ class MedicalPractitioner(BaseModel, Base):
     appointments: Mapped[list['Appointment']] = relationship(
         lazy="selectin",
         back_populates="medical_practitioner")
+    services: Mapped[list['Service']] = relationship(
+        lazy="selectin", back_populates="medical_practitioner", cascade="all, delete-orphan")

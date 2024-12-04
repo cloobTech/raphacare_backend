@@ -36,3 +36,8 @@ class DataRequiredError(Exception):
 class AppointmentSlotNotAvailableError(Exception):
     """Raised when the appointment slot is not available"""
     pass
+
+
+class InvalidFileError(Exception):
+    """Raised when the file is invalid"""
+    pass

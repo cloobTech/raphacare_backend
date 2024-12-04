@@ -23,4 +23,6 @@ class Admin(BaseModel, Base):
         Enum(AdminType), nullable=False, default=AdminType.normal)
 
     user: Mapped['User'] = relationship(
-        back_populates="admin", uselist=False)
+        back_populates="admin", lazy="joined", uselist=False)
+    services: Mapped[list['Service']] = relationship(
+        "Service", back_populates="admin")
