@@ -9,7 +9,7 @@
 ## Documentation
 
 <details>
-<summary>Basic Endpoints</summary>
+<summary>Authentication</summary>
 
 - [Login User](docs/api/auth/login_user.md)
 - [Register New Medical_Practitioner](docs/api/auth/register_medical_practitioner.md)
@@ -17,5 +17,22 @@
 - [Request Token](docs/api/auth/request_token.md)
 - [Reset/Update Password](docs/api/auth/reset_password.md)
 - [Verify New Email Registration](docs/api/auth/verify_email.md)
+
+</details>
+<details>
+<summary>Medical Practitioners</summary>
+
+- [Get All Medical Practitioners](docs/api/medical_practitioners/get_all_%20medical_practitioners.md)
+- [Get Medical Practitioner By Id](docs/api/medical_practitioners/get_medical_practitioner_by_id.md)
+- [Register New Medical_Practitioner](docs/api/auth/register_medical_practitioner.md)
+
+</details>
+
+<details>
+<summary>Patients</summary>
+
+- [Get All Patients](docs/api/patients/get_all_patients.md)
+- [Get Patient By Id](docs/api/patients/get_patient_by_id.md)
+- [Register New Patient](docs/api/auth/register_patient.md)
 
 </details>

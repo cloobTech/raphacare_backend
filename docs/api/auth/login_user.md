@@ -14,7 +14,7 @@ The request should be made with `Content-Type: multipart/form-data` and include 
 
 | Name        | Type   | Required | Description                                                                         |
 | ----------- | ------ | -------- | ----------------------------------------------------------------------------------- |
-| `username`  | string | Yes      | The username of the user.                                                           |
+| `username`  | string | Yes      | The email of the user.                                                              |
 | `password`  | string | Yes      | The password of the user.                                                           |
 | `auth_type` | string | Yes      | The authentication strategy to use. Possible values: `local`, `google`, `facebook`. |
 
