@@ -37,6 +37,8 @@
 - [Register New Patient](docs/api/auth/register_patient.md)
 
 </details>
+
+<details>
 <summary>Appointments</summary>
 
 - [Create Appointment](docs/api/medical_services/appointment.md)

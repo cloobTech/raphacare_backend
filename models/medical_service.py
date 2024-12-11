@@ -31,3 +31,5 @@ class Service(BaseModel, Base):
         back_populates='services', uselist=False)
     admin: Mapped['Admin'] = relationship(
         back_populates='services', uselist=False)
+    payments: Mapped[list['Payment']] = relationship(
+        back_populates='service')
