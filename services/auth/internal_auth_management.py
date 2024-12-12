@@ -7,7 +7,7 @@
     - Change Password (Same as reset pwd)
 """
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Callable
 import bcrypt
 from sqlalchemy.orm.exc import NoResultFound
@@ -66,7 +66,7 @@ class LocalAuthStrategy(AuthStrategy):
         if not user:
             raise InvalidTokenError("Invalid Token")
         # token is valid for 3 minutes
-        if datetime.now() - user.token_created_at > timedelta(minutes=3):
+        if datetime.now(timezone.utc) - user.token_created_at.replace(tzinfo=timezone.utc) > timedelta(minutes=3):
             raise TokenExpiredError("Token Expired")
 
         # merge the current session object
@@ -89,7 +89,7 @@ class LocalAuthStrategy(AuthStrategy):
 
         # Save the token in your database
         # await user.update({"reset_token": generate_token(), "token_created_at": datetime.now()})
-        await user.update({"reset_token": "123456", "token_created_at": datetime.now()})
+        await user.update({"reset_token": "123456", "token_created_at": datetime.now(timezone.utc)})
 
         # REMEMBER TO ADD THIS LINE
         # Send verification email

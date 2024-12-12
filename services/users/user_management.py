@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import bcrypt
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
@@ -27,7 +27,7 @@ def create_user(user_auth_details: dict) -> User:
     new_user = User(**user_auth_details)
     # new_user.reset_token = generate_token()
     new_user.reset_token = "123456"
-    new_user.token_created_at = datetime.now()
+    new_user.token_created_at = datetime.now(timezone.utc)
     return new_user
 
 
