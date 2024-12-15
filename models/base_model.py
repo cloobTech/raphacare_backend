@@ -5,10 +5,11 @@ import json
 import uuid
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from utils.parse_datetime import parse_and_format_datetime
 
 # List of date fields
 date_fields = ['token_created_at',
-               'appointment_start_time', 'appointment_end_time']
+               'appointment_start_time', 'appointment_end_time', 'date_of_birth']
 
 # format for datetime used within the app
 TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
@@ -53,8 +54,7 @@ class BaseModel:
         # Convert date fields from strings to datetime objects
         for field in date_fields:
             if field in attr_dict and isinstance(attr_dict[field], str):
-                attr_dict[field] = datetime.strptime(
-                    attr_dict[field], TIME_FORMAT)
+                attr_dict[field] = parse_and_format_datetime(attr_dict[field])
 
         if "__class__" in attr_dict:
             del attr_dict["__class__"]
@@ -118,8 +118,7 @@ class BaseModel:
              # Convert date fields from strings to datetime objects
             for field in date_fields:
                 if field in updated_dict and isinstance(updated_dict[field], str):
-                    updated_dict[field] = datetime.strptime(
-                        updated_dict[field], TIME_FORMAT)
+                    updated_dict[field] = parse_and_format_datetime(updated_dict[field])
             for key, value in updated_dict.items():
                 setattr(self, key, value)
             await self.save()
