@@ -5,7 +5,8 @@ TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
 # Define fallback formats for parsing unknown date strings
 FALLBACK_FORMATS = [
-    "%Y-%m-%dT%H:%M:%S",          # ISO format with seconds/milliseconds
+    "%Y-%m-%dT%H:%M:%S.%f",          # ISO format with seconds/milliseconds
+    "%Y-%m-%dT%H:%M:%S",       # ISO format with seconds
     "%Y-%m-%dT%H:%M",          # ISO format without seconds/milliseconds
     "%Y-%m-%d %H:%M:%S",       # Common format with space
     "%Y/%m/%d %H:%M:%S",       # Slash-separated

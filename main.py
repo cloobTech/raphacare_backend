@@ -11,3 +11,5 @@ async def reload_db():
     print('DB reloaded')
 
 asyncio.run(reload_db())
+
+
