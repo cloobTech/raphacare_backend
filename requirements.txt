@@ -2,10 +2,13 @@ aiosqlite==0.20.0
 annotated-types==0.7.0
 anyio==4.6.2.post1
 bcrypt==4.2.1
+cachetools==5.5.0
 certifi==2024.8.30
 charset-normalizer==3.4.0
 click==8.1.7
 cloudinary==1.41.0
+cssselect==1.2.0
+cssutils==2.11.1
 dnspython==2.7.0
 ecdsa==0.19.0
 email_validator==2.2.0
@@ -13,6 +16,9 @@ fastapi==0.115.5
 greenlet==3.1.1
 h11==0.14.0
 idna==3.10
+lxml==5.3.0
+more-itertools==10.5.0
+premailer==3.10.0
 pyasn1==0.6.1
 pydantic==2.10.0
 pydantic-settings==2.6.1
@@ -32,3 +38,4 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 uvicorn==0.32.1
 websockets==14.1
+yagmail==0.15.293

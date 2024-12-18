@@ -1,5 +1,5 @@
 from typing import Callable
-from fastapi import APIRouter, Depends, Form, HTTPException, status
+from fastapi import APIRouter, Depends, Form, HTTPException, status, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -60,12 +60,12 @@ async def login(user_credentials: OAuth2PasswordRequestFormWithStrategy = Depend
 
 
 @router.post('/register', status_code=status.HTTP_201_CREATED, response_model=DefaultResponse)
-async def register_new_user(data: RegisterUser, storage: AsyncSession = Depends(get_db_session), email_service: Callable = Depends(send_email)):
+async def register_new_user(data: RegisterUser, background_task: BackgroundTasks, storage: AsyncSession = Depends(get_db_session)):
     """Register a new user"""
     auth_context = AuthContext()
     try:
         auth_context.set_strategy(data.auth_details.auth_type)
-        response = await auth_context.register_user(data, storage, email_service)
+        response = await auth_context.register_user(data, storage, background_task)
         return response
     except UserAlreadyExistsError as e:
         raise HTTPException(

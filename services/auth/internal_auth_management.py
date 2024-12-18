@@ -20,6 +20,7 @@ from services.auth.auth_jwt import valid_login
 from services.users.user_management import check_user_existence, create_user, create_user_profile
 from storage.database import DBStorage
 from utils.generate_token import generate_token
+from utils.email_service import send_email
 
 
 class LocalAuthStrategy(AuthStrategy):
@@ -33,7 +34,7 @@ class LocalAuthStrategy(AuthStrategy):
         token: TokenResponse = await valid_login(email, password, storage)
         return token
 
-    async def register_user(self, data: RegisterUser, storage: DBStorage, email_service: Callable) -> DefaultResponse:
+    async def register_user(self, data: RegisterUser, storage: DBStorage, background_tasks) -> DefaultResponse:
         """Register a new user"""
         registration_dict = data.model_dump()
         user_auth_details = registration_dict.get('auth_details')
@@ -48,7 +49,9 @@ class LocalAuthStrategy(AuthStrategy):
         await new_user_profile.save()
 
         # Send verification email
-        await email_service()
+        # Schedule the email sending task
+        background_tasks.add_task(send_email, new_user.email, "Verify your email",
+                                  "email_verification.html", {"verification_token": new_user.reset_token})
 
         return DefaultResponse(
             status="success",
