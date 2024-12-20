@@ -1,5 +1,4 @@
 from typing import AsyncGenerator, Type, Any
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy import select
 from sqlalchemy.sql.expression import BinaryExpression
@@ -176,14 +175,6 @@ class DBStorage:
 
         return None
 
-  
-    # async def get(self, cls: Type[Base], obj_id: str) -> dict | None:
-    #     """retrieves one object based on a class name and obj_id"""
-    #     if cls and obj_id:
-    #         dict_key = f'{cls.__name__}.{obj_id}'
-    #         all_obj = await self.all(cls)
-    #         return all_obj.get(dict_key)
-    #     return None
 
     def count(self, cls: Type[Base] | None = None) -> int:
         """Return the count of all objects in storage"""

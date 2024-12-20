@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from errors.custome_errors import EntityNotFoundError, DataRequiredError, AppointmentSlotNotAvailableError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
+from schemas.consultation import CreateAppointment
 from services.consultations.appointment import get_appointment_by_id, get_all_appointments, create_appointment, update_appointment_info
 
 
@@ -35,7 +36,7 @@ async def get_all_appointments_route(storage=Depends(get_db_session)):
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED, response_model=DefaultResponse)
-async def create_appointment_route(data: dict, storage=Depends(get_db_session)):
+async def create_appointment_route(data: CreateAppointment, storage=Depends(get_db_session)):
     """Create appointment"""
     try:
         appointment = await create_appointment(data, storage)

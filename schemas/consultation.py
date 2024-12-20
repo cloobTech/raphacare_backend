@@ -1,6 +1,7 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, Field
 from typing import Optional
+from models.appointment import AppointmentStatus, AppointmentType
 
 
 class Prescription(BaseModel):
@@ -9,6 +10,20 @@ class Prescription(BaseModel):
     dosage: str
     duration: str
     note: Optional[str] = None
+
+
+class CreateAppointment(BaseModel):
+    """Create appointment schema"""
+    patient_id: str = Field(..., title="Patient ID")
+    medical_practitioner_id: str = Field(..., title="Medical Practitioner ID")
+    appointment_start_time: str = Field(..., title="Appointment Start Time")
+    appointment_end_time: str = Field(..., title="Appointment End Time")
+    appointment_status: str = Field(
+        AppointmentStatus, title="Appointment Staus")
+    appointment_type: str = Field(
+        AppointmentType, title="Appointment Type")
+    appointment_reason: str = Field(..., title="Appointment Reason")
+    appointment_note: str = Field(None, title="Appointment Note")
 
 
 class CreateConsultation(BaseModel):

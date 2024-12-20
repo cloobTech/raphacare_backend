@@ -4,6 +4,7 @@ from models.appointment import Appointment
 from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
+from schemas.consultation import CreateAppointment
 from services.consultations.helpers import is_slot_available
 from services.messaging.notifications.helper import new_pending_appointment, confirmed_rejected_completed_appointment
 
@@ -39,8 +40,9 @@ async def get_all_appointments(storage: DB) -> DefaultResponse:
     )
 
 
-async def create_appointment(data: dict, storage: DB) -> DefaultResponse:
+async def create_appointment(data_model: CreateAppointment, storage: DB) -> DefaultResponse:
     """Create appointment"""
+    data = data_model.model_dump()
     patient = await storage.get(Patient, data['patient_id'])
     if not patient:
         raise EntityNotFoundError('Patient not found')

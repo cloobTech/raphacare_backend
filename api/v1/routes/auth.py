@@ -96,10 +96,10 @@ async def verify_email_route(token_input: VerifyEmailTokenInput, storage: AsyncS
 
 
 @router.post('/request-reset-token', status_code=status.HTTP_200_OK)
-async def request_token(data: RequestResetToken, storage: AsyncSession = Depends(get_db_session), email_service: Callable = Depends(send_email)):
+async def request_token(data: RequestResetToken, background_task: BackgroundTasks, storage: AsyncSession = Depends(get_db_session)):
     """Request a reset token"""
     try:
-        response = await internal_auth.request_reset_token(data, storage, email_service)
+        response = await internal_auth.request_reset_token(data, storage, background_task)
         return response
     except NoResultFound as e:
         raise HTTPException(

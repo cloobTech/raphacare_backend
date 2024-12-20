@@ -34,7 +34,7 @@ class LocalAuthStrategy(AuthStrategy):
         token: TokenResponse = await valid_login(email, password, storage)
         return token
 
-    async def register_user(self, data: RegisterUser, storage: DBStorage, background_tasks) -> DefaultResponse:
+    async def register_user(self, data: RegisterUser, storage: DBStorage, background_email_service) -> DefaultResponse:
         """Register a new user"""
         registration_dict = data.model_dump()
         user_auth_details = registration_dict.get('auth_details')
@@ -50,8 +50,8 @@ class LocalAuthStrategy(AuthStrategy):
 
         # Send verification email
         # Schedule the email sending task
-        background_tasks.add_task(send_email, new_user.email, "Verify your email",
-                                  "email_verification.html", {"verification_token": new_user.reset_token})
+        background_email_service.add_task(send_email, new_user.email, "Verify your email",
+                                          "email_verification.html", {"verification_token": new_user.reset_token})
 
         return DefaultResponse(
             status="success",
@@ -81,7 +81,7 @@ class LocalAuthStrategy(AuthStrategy):
         token: TokenResponse = await valid_login(user.email, password, storage)
         return token
 
-    async def request_reset_token(self, data: RequestResetToken, storage: DBStorage, email_service: Callable) -> DefaultResponse:
+    async def request_reset_token(self, data: RequestResetToken, storage: DBStorage, background_email_service) -> DefaultResponse:
         """Request a reset token"""
         data = data.model_dump()
         email = data.get('email')
@@ -95,7 +95,8 @@ class LocalAuthStrategy(AuthStrategy):
 
         # REMEMBER TO ADD THIS LINE
         # Send verification email
-        await email_service()
+        background_email_service.add_task(send_email, user.email, "Token",
+                                          "email_verification.html", {"verification_token": user.reset_token})
 
         return DefaultResponse(
             status="success",
