@@ -19,9 +19,9 @@ class CreateAppointment(BaseModel):
     appointment_start_time: str = Field(..., title="Appointment Start Time")
     appointment_end_time: str = Field(..., title="Appointment End Time")
     appointment_status: str = Field(
-        AppointmentStatus, title="Appointment Staus")
+        AppointmentStatus.pending, title="Appointment Staus")
     appointment_type: str = Field(
-        AppointmentType, title="Appointment Type")
+        AppointmentType.online, title="Appointment Type")
     appointment_reason: str = Field(..., title="Appointment Reason")
     appointment_note: str = Field(None, title="Appointment Note")
 

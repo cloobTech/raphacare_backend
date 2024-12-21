@@ -34,12 +34,11 @@ class Patient(BaseModel, Base):
     date_of_birth: Mapped[datetime] = mapped_column(nullable=True)
     profile_picture_url: Mapped[str] = mapped_column(nullable=True)
 
-
     user: Mapped['User'] = relationship(
         back_populates="patient", lazy="selectin", uselist=True)
     medical_histories: Mapped[list['MedicalHistory']] = relationship(
         back_populates="patient")
     appointments: Mapped[list['Appointment']] = relationship(
-       lazy="selectin", back_populates="patient")
+        lazy="selectin", back_populates="patient", cascade="all, delete-orphan")
     subscription: Mapped[list['Subscription']] = relationship(
         back_populates="patient")
