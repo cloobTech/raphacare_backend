@@ -42,3 +42,4 @@ class Patient(BaseModel, Base):
         lazy="selectin", back_populates="patient", cascade="all, delete-orphan")
     subscription: Mapped[list['Subscription']] = relationship(
         back_populates="patient")
+ 

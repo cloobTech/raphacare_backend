@@ -1,7 +1,8 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, model_validator
+from typing import Any, Optional
 from models.appointment import AppointmentStatus, AppointmentType
+from schemas.address import HealthCenterModel, HomeAddressModel
 
 
 class Prescription(BaseModel):
@@ -24,6 +25,25 @@ class CreateAppointment(BaseModel):
         AppointmentType.online, title="Appointment Type")
     appointment_reason: str = Field(..., title="Appointment Reason")
     appointment_note: str = Field(None, title="Appointment Note")
+    health_center_id: Optional[str] = None
+    home_address: Optional[HomeAddressModel] = None
+
+    @model_validator(mode='before')
+    @classmethod
+    def validate(cls, value: dict):
+        """Validate the appointment start and end time"""
+        if value.get("appointment_start_time") >= value.get("appointment_end_time"):
+            raise ValueError(
+                "Appointment end time must be greater than the start time")
+        if value.get("appointment_type").lower() == AppointmentType.home_service:
+            if not value.get("home_address"):
+                raise ValueError(
+                    "Home address is required for Home Service appointment")
+        elif value.get("appointment_type").lower() == AppointmentType.physical:
+            if not value.get("health_center_id"):
+                raise ValueError(
+                    "Health center Address is required for Physical appointment")
+        return value
 
 
 class CreateConsultation(BaseModel):

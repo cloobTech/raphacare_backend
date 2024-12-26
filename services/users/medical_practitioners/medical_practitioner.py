@@ -5,11 +5,12 @@ from storage import DBStorage
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
 from schemas.service import AddServices
+from schemas.address import HealthCenterModel
 from services.medical_services.helper import return_service_by_id
-from services.users.medical_practitioners.helper import upload_file
+from services.users.medical_practitioners.helper import create_health_care_center, upload_file, get_medical_practitioner_id
 
 
-async def get_medical_practitioner_by_id(medical_practitioner_id: str, storage: DBStorage) -> DefaultResponse:
+async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStorage) -> DefaultResponse:
     """Get medical practitioner by id"""
     medical_practitioner = await storage.get(MedicalPractitioner, medical_practitioner_id)
     if not medical_practitioner:
@@ -83,8 +84,6 @@ async def add_service_to_medical_practitioner(medical_practitioner_id: str, serv
         if service:
             service_list.append(service)
             result.append(service.to_dict())
-        else:
-            print(f"Service with ID {service_id} not found")
 
     # Step 3: Append the services to the medical practitioner's services relationship
     medical_practitioner.services.extend(service_list)
@@ -103,27 +102,23 @@ async def add_service_to_medical_practitioner(medical_practitioner_id: str, serv
     )
 
 
-# async def add_service_to_medical_practitioner(medical_practitioner_id: str, services_data: AddServices, storage) -> DefaultResponse:
-#     """ Add a service to a medical practitioner """
+async def add_health_center(medical_practitioner_id: str, health_center_data: list[HealthCenterModel], storage) -> DefaultResponse:
+    """Add health center"""
+    health_center_addresses: list = []
 
-#     print(storage)
-#     service_list: list = []
-#     data: dict = services_data.model_dump()
-#     services: list = data.get('services')
-#     medical_practitioner = await storage.get(MedicalPractitioner, medical_practitioner_id)
-#     if not medical_practitioner:
-#         raise EntityNotFoundError('Medical practitioner not found')
-#     for service_id in services:
-#         service = await return_service_by_id(service_id, storage)
-#         service_list.append(service)
-#     medical_practitioner.services.extend(service_list)
-#     await storage.merge(medical_practitioner)
+    medical_practitioner = await get_medical_practitioner_id(
+        medical_practitioner_id, storage)
+    for data in health_center_data:
+        health_center = create_health_care_center(data)
+        health_center_addresses.append(health_center)
+    await storage.add_all(health_center_addresses)
+    await medical_practitioner.save()
 
-#     return DefaultResponse(
-#         status="success",
-#         message="Service(s) added to medical practitioner successfully",
-#         # data=service_list
-#     )
+    return DefaultResponse(
+        status="success",
+        message="Health center added successfully",
+        data=[center.to_dict() for center in health_center_addresses]
+    )
 
 
 async def generic_file_upload(medical_practitioner_id: str,  resource_type, file, storage) -> DefaultResponse:

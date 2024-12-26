@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException, status, File, Form, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, status, File, Form, UploadFile, Body
 from errors.custome_errors import EntityNotFoundError, DataRequiredError, InvalidFileError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
 from schemas.service import AddServices
+from schemas.address import HealthCenterModel
 from services.users.medical_practitioners.medical_practitioner import (
-    get_medical_practitioner_by_id, get_all_medical_practitioners, update_medical_practitioner_info, add_service_to_medical_practitioner, generic_file_upload)
+    get_medical_practitioner,
+    get_all_medical_practitioners, update_medical_practitioner_info, add_service_to_medical_practitioner, add_health_center, generic_file_upload)
 
 
 router = APIRouter(tags=['Medical Practitioner'],
@@ -15,7 +17,7 @@ router = APIRouter(tags=['Medical Practitioner'],
 async def get_medical_practitioner_by_id_route(medical_practitioner_id: str, storage=Depends(get_db_session)):
     """Get medical practitioner by id"""
     try:
-        medical_practitioner = await get_medical_practitioner_by_id(medical_practitioner_id, storage)
+        medical_practitioner = await get_medical_practitioner(medical_practitioner_id, storage)
         return medical_practitioner
     except EntityNotFoundError as e:
         raise HTTPException(
@@ -65,6 +67,21 @@ async def add_service_to_medical_practitioner_route(medical_practitioner_id: str
     except DataRequiredError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e
+
+
+@router.post('/{medical_practitioner_id}/add_health_centers', status_code=status.HTTP_201_CREATED, response_model=DefaultResponse)
+async def add_health_center_route(medical_practitioner_id: str,  data: list[HealthCenterModel] =  Body(...), storage=Depends(get_db_session)):
+    """Add Health Center Address"""
+
+    try:
+        health_center = await add_health_center(medical_practitioner_id, data, storage)
+        return health_center
+    except EntityNotFoundError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail=str(e)) from e
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e)) from e

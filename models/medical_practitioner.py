@@ -39,3 +39,5 @@ class MedicalPractitioner(BaseModel, Base):
         back_populates="medical_practitioner")
     services: Mapped[list['Service']] = relationship(
         lazy="selectin", back_populates="medical_practitioner", cascade="all, delete-orphan")
+    health_centers: Mapped[list['HealthCenter']] = relationship(
+        back_populates="medical_practitioner", lazy="selectin", cascade="all, delete-orphan")

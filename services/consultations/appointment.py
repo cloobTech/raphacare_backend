@@ -5,7 +5,7 @@ from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
 from schemas.consultation import CreateAppointment
-from services.consultations.helpers import is_slot_available
+from services.consultations.helpers import is_slot_available, determine_address_type
 from services.messaging.notifications.helper import new_pending_appointment, confirmed_rejected_completed_appointment
 
 
@@ -49,18 +49,15 @@ async def create_appointment(data_model: CreateAppointment, storage: DB) -> Defa
     medical_practitioner = await storage.get(MedicalPractitioner, data['medical_practitioner_id'])
     if not medical_practitioner:
         raise EntityNotFoundError('Medical practitioner not found')
-    filter_data = {
-        "medical_practitioner_id": data['medical_practitioner_id'],
-        "appointment_start_time": data['appointment_start_time'],
-        "appointment_end_time": data['appointment_end_time']
-    }
-    if not await is_slot_available(storage, filter_data):
+    if not await is_slot_available(storage, data):
         raise AppointmentSlotNotAvailableError("Slot is not available")
     await storage.merge(medical_practitioner)
     await storage.merge(patient)
     appointment = Appointment(**data, patient=patient,
                               medical_practitioner=medical_practitioner)
 
+    # Determine the address type
+    appointment = await determine_address_type(appointment, data, storage)
     await appointment.save()
     # Create new pending appointment notification
     await new_pending_appointment(appointment, storage)

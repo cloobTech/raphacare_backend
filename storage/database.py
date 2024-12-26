@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sess
 from sqlalchemy import select
 from sqlalchemy.sql.expression import BinaryExpression
 from models import (medical_service, user, patient, medical_history,
-                    medical_practitioner, admin, appointment, consultation, prescription, notification, subscription, payment)
+                    medical_practitioner, admin, appointment, consultation, prescription, notification, subscription, payment, address, health_center)
 from models.base_model import Base
 
 
@@ -22,8 +22,9 @@ class DBStorage:
         "Notification": notification.Notification,
         "Service": medical_service.Service,
         "Subscription": subscription.Subscription,
-        "Payment": payment.Payment
-
+        "Payment": payment.Payment,
+        "Address": address.Address,
+        "HealthCenter": health_center.HealthCenter
     }
 
     __engine = None
@@ -41,8 +42,6 @@ class DBStorage:
         async with self.__session_maker() as session:
             async with session.begin():
                 yield session
-
-
 
     async def db_session(self) -> AsyncGenerator[AsyncSession, None]:
         """Create and return a session object"""
@@ -65,11 +64,16 @@ class DBStorage:
         async for session in self._session():
             session.add(obj)
 
+    async def add_all(self, data: list[Type[Base]]):
+        """Add Batch"""
+        async for session in self._session():
+            session.add_all(data)
+
     # async def save(self):
     #     """Commit all changes of the current database session"""
     #     async for session in self._session():
     #         await session.commit()
-            
+
     async def save(self, session: AsyncSession = None):
         """Commit all changes of the current database session."""
         if not session:
@@ -77,7 +81,6 @@ class DBStorage:
                 await session.commit()
         else:
             await session.commit()
-
 
     async def rollback(self, session: AsyncSession = None):
         """Roll back the current database session."""
@@ -133,7 +136,6 @@ class DBStorage:
             merged_obj = await session.merge(obj)
             return merged_obj
 
-
     async def all(self, cls: Type[Base] | None = None) -> dict:
         """Query all objects of a specific class or all models."""
         objects = {}
@@ -174,7 +176,6 @@ class DBStorage:
                 print(f"Error in `get` method: {e}")
 
         return None
-
 
     def count(self, cls: Type[Base] | None = None) -> int:
         """Return the count of all objects in storage"""
