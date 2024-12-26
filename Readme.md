@@ -25,6 +25,7 @@
 - [Get All Medical Practitioners](docs/api/medical_practitioners/get_all_%20medical_practitioners.md)
 - [Get Medical Practitioner By Id](docs/api/medical_practitioners/get_medical_practitioner_by_id.md)
 - [Medical Practitioner Add Services](docs/api/medical_practitioners/add_services.md)
+- [Add Health Centers](docs/api/medical_practitioners/add_health_centers.md)
 - [Register New Medical_Practitioner](docs/api/auth/register_medical_practitioner.md)
 
 </details>
@@ -35,6 +36,7 @@
 - [Get All Patients](docs/api/patients/get_all_patients.md)
 - [Get Patient By Id](docs/api/patients/get_patient_by_id.md)
 - [Register New Patient](docs/api/auth/register_patient.md)
+
 
 </details>
 
