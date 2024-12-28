@@ -8,13 +8,13 @@
 """
 
 from datetime import datetime, timedelta, timezone
-from typing import Callable
 import bcrypt
 from sqlalchemy.orm.exc import NoResultFound
 from errors.custome_errors import InvalidTokenError, TokenExpiredError
 from models.user import User
 from schemas.auth import RegisterUser, RequestResetToken, TokenResponse, VerifyEmailTokenInput
 from schemas.default_response import DefaultResponse
+from settings.pydantic_config import settings
 from services.auth.auth_base import AuthStrategy
 from services.auth.auth_jwt import valid_login
 from services.users.user_management import check_user_existence, create_user, create_user_profile
@@ -50,8 +50,9 @@ class LocalAuthStrategy(AuthStrategy):
 
         # Send verification email
         # Schedule the email sending task
-        background_email_service.add_task(send_email, new_user.email, "Verify your email",
-                                          "email_verification.html", {"verification_token": new_user.reset_token})
+        if settings.DEV_ENV == "production":
+            background_email_service.add_task(send_email, new_user.email, "Verify your email",
+                                              "email_verification.html", {"verification_token": new_user.reset_token})
 
         return DefaultResponse(
             status="success",
@@ -93,10 +94,10 @@ class LocalAuthStrategy(AuthStrategy):
         # Save the token in your database
         await user.update({"reset_token": generate_token(), "token_created_at": datetime.now(timezone.utc)})
 
-        # REMEMBER TO ADD THIS LINE
         # Send verification email
-        background_email_service.add_task(send_email, user.email, "Token",
-                                          "email_verification.html", {"verification_token": user.reset_token})
+        if settings.DEV_ENV == "production":
+            background_email_service.add_task(send_email, user.email, "Token",
+                                              "email_verification.html", {"verification_token": user.reset_token})
 
         return DefaultResponse(
             status="success",
