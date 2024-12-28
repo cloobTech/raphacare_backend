@@ -4,6 +4,7 @@ from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
 from schemas.service import AddServices
 from schemas.address import HealthCenterModel
+from schemas.user import GetPractionerParams
 from services.users.medical_practitioners.medical_practitioner import (
     get_medical_practitioner,
     get_all_medical_practitioners, update_medical_practitioner_info, add_service_to_medical_practitioner, add_health_center, generic_file_upload)
@@ -14,10 +15,10 @@ router = APIRouter(tags=['Medical Practitioner'],
 
 
 @router.get('/{medical_practitioner_id}', status_code=status.HTTP_200_OK, response_model=DefaultResponse)
-async def get_medical_practitioner_by_id_route(medical_practitioner_id: str, storage=Depends(get_db_session)):
+async def get_medical_practitioner_by_id_route(medical_practitioner_id: str, storage=Depends(get_db_session), params: GetPractionerParams = Depends()):
     """Get medical practitioner by id"""
     try:
-        medical_practitioner = await get_medical_practitioner(medical_practitioner_id, storage)
+        medical_practitioner = await get_medical_practitioner(medical_practitioner_id, storage=storage, params=params)
         return medical_practitioner
     except EntityNotFoundError as e:
         raise HTTPException(
@@ -73,7 +74,7 @@ async def add_service_to_medical_practitioner_route(medical_practitioner_id: str
 
 
 @router.post('/{medical_practitioner_id}/add_health_centers', status_code=status.HTTP_201_CREATED, response_model=DefaultResponse)
-async def add_health_center_route(medical_practitioner_id: str,  data: list[HealthCenterModel] =  Body(...), storage=Depends(get_db_session)):
+async def add_health_center_route(medical_practitioner_id: str,  data: list[HealthCenterModel] = Body(...), storage=Depends(get_db_session)):
     """Add Health Center Address"""
 
     try:

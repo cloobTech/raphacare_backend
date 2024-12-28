@@ -74,3 +74,10 @@ class PatientProfileDetails(BaseModel):
 
     class Config:
         use_enum_values = True
+
+
+class GetPractionerParams(BaseModel):
+    """Get Medical Practitioner Params"""
+    get_health_centers:  bool = False
+    get_services: bool = False
+    get_appointments: bool = False
