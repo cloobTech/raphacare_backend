@@ -52,13 +52,14 @@ class CreateAppointment(BaseModel):
         appointment_type = values.get("appointment_type")
         appointment_status = values.get("appointment_status")
 
-        if not isinstance(appointment_type, AppointmentType):
+        if appointment_type not in [member.value for member in AppointmentType]:
             raise ValueError(
-                f"Invalid appointment type: {appointment_type}. appointment type must be one of {AppointmentType._member_names_}")
+            f"Invalid appointment type: {appointment_type}. Appointment type must be one of {[member.value for member in AppointmentType]}"
+        )
 
-        if not isinstance(appointment_status, AppointmentStatus):
+        if appointment_status not in [member.value for member in AppointmentStatus]:
             raise ValueError(
-                f"Invalid appointment status: {appointment_status}. appointment status must be one of {AppointmentStatus._member_names_}")
+                f"Invalid appointment status: {appointment_status}. appointment status must be one of {[member.value for member in AppointmentStatus]}")
 
         return values
 

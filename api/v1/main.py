@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.v1.routes import (auth, patient, medical_practitioner, appointment, consultation, prescription, event, notification, service, lifecycle
-                     )
+from api.v1.routes import (auth, patient, medical_practitioner, appointment, consultation, prescription, event, notification, service, lifecycle, health_center
+                           )
 
 app = FastAPI()
 
@@ -30,6 +30,7 @@ app.include_router(prescription.router)
 app.include_router(event.router)
 app.include_router(notification.router)
 app.include_router(service.router)
+app.include_router(health_center.router)
 app.include_router(lifecycle.router)
 
 

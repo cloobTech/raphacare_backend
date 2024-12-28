@@ -28,7 +28,7 @@ async def update_profile_picture(medical_practitioner_id: str, url: str, storage
 
 async def get_medical_practitioner_id(medical_practitioner_id: str, storage) -> MedicalPractitioner:
     """Get Medical Practitioner"""
-    async for session in storage.db_session(): 
+    async for session in storage.db_session():
         medical_practitioner = await session.execute(
             select(MedicalPractitioner).options(selectinload(MedicalPractitioner.health_centers)).filter(
                 MedicalPractitioner.id == medical_practitioner_id)
@@ -44,3 +44,8 @@ def create_health_care_center(data: HealthCenterModel):
     data_dict = data.model_dump()
     center = HealthCenter(**data_dict)
     return center
+
+
+def format_return_data(data: dict):
+    """Format return data"""
+    return [center.to_dict() for center in data]

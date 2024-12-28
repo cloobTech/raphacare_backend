@@ -14,21 +14,35 @@ from services.users.medical_practitioners.helper import create_health_care_cente
 async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStorage, params: GetPractionerParams) -> DefaultResponse:
     """Get medical practitioner by id"""
     param_dicts = params.model_dump()
-    print(param_dicts)
+
     medical_practitioner = await storage.get(MedicalPractitioner, medical_practitioner_id)
     if not medical_practitioner:
         raise EntityNotFoundError('Medical practitioner not found')
+
     medical_practitioner_data = medical_practitioner.to_dict()
     medical_practitioner_data['user'] = medical_practitioner.user.to_dict(
     ) if medical_practitioner.user else None
-    medical_practitioner_data['health_centers'] = [center.to_dict(
-    ) for center in medical_practitioner.health_centers] if param_dicts.get('get_health_centers') else medical_practitioner_data.pop('health_centers')
-    medical_practitioner_data['services'] = [service.to_dict(
-    ) for service in medical_practitioner.services] if param_dicts.get('get_services') else medical_practitioner_data.pop('services')
-    print(param_dicts.get('get_appointments'))
-    medical_practitioner_data['appointments'] = [appointment.to_dict(
-    ) for appointment in medical_practitioner.appointments] if param_dicts.get('get_appointments') else medical_practitioner_data.pop('appointments')
-    print(medical_practitioner_data['appointments'])
+
+    
+    # Fix multiple if statements
+    if param_dicts.get('get_health_centers'):
+        medical_practitioner_data['health_centers'] = [
+            center.to_dict() for center in medical_practitioner.health_centers]
+    else:
+        del medical_practitioner_data['health_centers']
+
+    if param_dicts.get('get_services'):
+        medical_practitioner_data['services'] = [
+            service.to_dict() for service in medical_practitioner.services]
+    else:
+        del medical_practitioner_data['services']
+
+    if param_dicts.get('get_appointments'):
+        medical_practitioner_data['appointments'] = [
+            appointment.to_dict() for appointment in medical_practitioner.appointments]
+    else:
+        del medical_practitioner_data['appointments']
+
     return DefaultResponse(
         status="success",
         message="Medical practitioner data retrieved successfully",
