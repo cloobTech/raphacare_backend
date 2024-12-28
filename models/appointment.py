@@ -41,9 +41,9 @@ class Appointment(BaseModel, Base):
     is_paid: Mapped[bool] = mapped_column(default=False, nullable=False)
 
     patient: Mapped['Patient'] = relationship(
-        back_populates="appointments",  uselist=False)
+        back_populates="appointments",  uselist=False, lazy='selectin')
     medical_practitioner: Mapped['MedicalPractitioner'] = relationship(
-        back_populates="appointments",  uselist=False)
+        back_populates="appointments",  uselist=False, lazy='selectin')
     consultation: Mapped['Consultation'] = relationship(
         back_populates="appointment",  uselist=False)
     address: Mapped['Address'] = relationship(

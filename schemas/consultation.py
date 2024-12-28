@@ -1,8 +1,8 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, model_validator
-from typing import Any, Optional
+from typing import Optional
 from models.appointment import AppointmentStatus, AppointmentType
-from schemas.address import HealthCenterModel, HomeAddressModel
+from schemas.address import HomeAddressModel
 
 
 class Prescription(BaseModel):
@@ -44,6 +44,23 @@ class CreateAppointment(BaseModel):
                 raise ValueError(
                     "Health center Address is required for Physical appointment")
         return value
+
+    @model_validator(mode="before")
+    @classmethod
+    def validate_appointment(cls, values: dict):
+        """Ensure appointment type and status are valid."""
+        appointment_type = values.get("appointment_type")
+        appointment_status = values.get("appointment_status")
+
+        if not isinstance(appointment_type, AppointmentType):
+            raise ValueError(
+                f"Invalid appointment type: {appointment_type}. appointment type must be one of {AppointmentType._member_names_}")
+
+        if not isinstance(appointment_status, AppointmentStatus):
+            raise ValueError(
+                f"Invalid appointment status: {appointment_status}. appointment status must be one of {AppointmentStatus._member_names_}")
+
+        return values
 
 
 class CreateConsultation(BaseModel):

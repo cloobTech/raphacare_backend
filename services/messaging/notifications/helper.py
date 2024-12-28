@@ -37,12 +37,13 @@ async def confirmed_rejected_completed_appointment(appointment: Appointment, sto
     Create confirmed/rejected/completed appointment notification
     - This notification will be sent to the patient when the appointment is confirmed/rejected/completed
     """
+    await storage.merge(appointment)
     medical_practitioner_full_name = f"{appointment.medical_practitioner.first_name} {
         appointment.medical_practitioner.last_name}"
     notification_data = {
         "user_id": appointment.patient.user_id,
         "title": "Appointment Status",
-        "message": f"Your appointment with Dr. {medical_practitioner_full_name} has been {appointment.status}",
+        "message": f"Your appointment with Dr. {medical_practitioner_full_name} has been {appointment.appointment_status}",
         "notification_type": "appointment",
         "is_read": False,
         "resource_id": appointment.id
