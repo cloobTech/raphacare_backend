@@ -39,7 +39,7 @@ class User(BaseModel, Base):
     admin: Mapped['Admin'] = relationship(
         back_populates="user", uselist=False, cascade="all, delete-orphan")
     notifications: Mapped[list['Notification']] = relationship(
-        back_populates="user", cascade="all, delete-orphan")
+        back_populates="user", cascade="all, delete-orphan", lazy="selectin")
     payments: Mapped[list['Payment']] = relationship(
         back_populates="user", cascade="all, delete-orphan")
 

@@ -19,9 +19,16 @@ async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStor
     if not medical_practitioner:
         raise EntityNotFoundError('Medical practitioner not found')
 
+    # includes user object in the return data
     medical_practitioner_data = medical_practitioner.to_dict()
     medical_practitioner_data['user'] = medical_practitioner.user.to_dict(
     ) if medical_practitioner.user else None
+
+    # include notifications in the return data
+    if param_dicts.get('get_notifications'):
+        print("hello")
+        medical_practitioner_data['notifications'] = [notification.to_dict()
+                                                      for notification in medical_practitioner.user.notifications]
 
     update_return_data_with_params(
         param_dicts, medical_practitioner_data, medical_practitioner)

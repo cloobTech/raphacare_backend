@@ -81,3 +81,4 @@ class GetPractionerParams(BaseModel):
     get_health_centers:  bool = False
     get_services: bool = False
     get_appointments: bool = False
+    get_notifications: bool = False
