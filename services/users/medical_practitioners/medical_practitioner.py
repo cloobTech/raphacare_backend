@@ -7,7 +7,7 @@ from schemas.default_response import DefaultResponse
 from schemas.service import AddServices
 from schemas.address import HealthCenterModel
 from schemas.user import GetPractionerParams
-from services.medical_services.helper import return_service_by_id
+from services.medical_services.helper import return_service_by_id, update_return_data_with_params
 from services.users.medical_practitioners.helper import create_health_care_center, upload_file, get_medical_practitioner_id
 
 
@@ -23,25 +23,8 @@ async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStor
     medical_practitioner_data['user'] = medical_practitioner.user.to_dict(
     ) if medical_practitioner.user else None
 
-    
-    # Fix multiple if statements
-    if param_dicts.get('get_health_centers'):
-        medical_practitioner_data['health_centers'] = [
-            center.to_dict() for center in medical_practitioner.health_centers]
-    else:
-        del medical_practitioner_data['health_centers']
-
-    if param_dicts.get('get_services'):
-        medical_practitioner_data['services'] = [
-            service.to_dict() for service in medical_practitioner.services]
-    else:
-        del medical_practitioner_data['services']
-
-    if param_dicts.get('get_appointments'):
-        medical_practitioner_data['appointments'] = [
-            appointment.to_dict() for appointment in medical_practitioner.appointments]
-    else:
-        del medical_practitioner_data['appointments']
+    update_return_data_with_params(
+        param_dicts, medical_practitioner_data, medical_practitioner)
 
     return DefaultResponse(
         status="success",

@@ -33,12 +33,13 @@ async def get_consultation_by_id(consultation_id: str, storage: DB) -> DefaultRe
     if not consultation:
         raise EntityNotFoundError('Consultation not found')
     consultation_data = consultation.to_dict()
+    consultation_data['prescriptions'] = [prescription.to_dict()
+                                          for prescription in consultation.prescriptions]
     return DefaultResponse(
         status="success",
         message="Consultation data retrieved successfully",
         data=consultation_data
     )
-
 
 
 async def update_consultation(consultation_id: str, consultation_data: dict, storage: DB) -> DefaultResponse:
@@ -55,7 +56,6 @@ async def update_consultation(consultation_id: str, consultation_data: dict, sto
         message="Consultation updated successfully",
         data=consultation.to_dict()
     )
-
 
 
 async def delete_consultation(consultation_id: str, storage: DB) -> DefaultResponse:

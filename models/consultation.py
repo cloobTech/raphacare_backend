@@ -17,4 +17,4 @@ class Consultation(BaseModel, Base):
     appointment: Mapped['Appointment'] = relationship(
         back_populates="consultation",  uselist=False)
     prescriptions: Mapped[list['Prescription']] = relationship(
-        back_populates="consultation")
+        back_populates="consultation", lazy="selectin")

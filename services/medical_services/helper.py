@@ -50,3 +50,21 @@ async def return_service_by_id(service_id: str, storage: DB) -> Service:
     """ Get a service by id """
     service = await storage.get(Service, service_id)
     return service
+
+
+def update_return_data_with_params(params: dict, data: dict, medical_practitioner: MedicalPractitioner):
+    """Update the return data for a medical practitioner"""
+    for key, value in params.items():
+        update_data(key, value, data, medical_practitioner)
+
+
+def update_data(param_key: str, param_value: bool, data: dict, medical_practitioner: MedicalPractitioner):
+    """Update data dictionary based on the param"""
+    if param_value:  # Only update if the parameter is True
+        attribute = param_key.replace('get_', '')  # Extract the attribute name
+        items = getattr(medical_practitioner, attribute, None)
+        if items is not None:
+            data[attribute] = [item.to_dict() for item in items]
+    else:
+        attribute = param_key.replace('get_', '')
+        data.pop(attribute, None)  # Safely remove the key if it exists
