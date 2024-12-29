@@ -40,12 +40,8 @@ class DBStorage:
     async def _session(self) -> AsyncGenerator[AsyncSession, None]:
         """Create and return a session object"""
         async with self.__session_maker() as session:
-            async with session.begin():
-                yield session
-
-    async def db_session(self) -> AsyncGenerator[AsyncSession, None]:
-        """Create and return a session object"""
-        async with self.__session_maker() as session:
+            if session is None:
+                raise RuntimeError("DatabaseSessionManager is not initialized")
             async with session.begin():
                 yield session
 
@@ -68,11 +64,6 @@ class DBStorage:
         """Add Batch"""
         async for session in self._session():
             session.add_all(data)
-
-    # async def save(self):
-    #     """Commit all changes of the current database session"""
-    #     async for session in self._session():
-    #         await session.commit()
 
     async def save(self, session: AsyncSession = None):
         """Commit all changes of the current database session."""
@@ -124,11 +115,6 @@ class DBStorage:
         """Close current DB session"""
         async for session in self._session():
             await session.close()
-
-    # async def rollback(self):
-    #     """Roll back current DB session"""
-    #     async for session in self._session():
-    #         await session.rollback()
 
     async def merge(self, obj: Type[Base]):
         """Merge the current session with the object"""

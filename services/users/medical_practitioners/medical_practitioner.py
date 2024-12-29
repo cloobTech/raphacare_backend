@@ -26,7 +26,6 @@ async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStor
 
     # include notifications in the return data
     if param_dicts.get('get_notifications'):
-        print("hello")
         medical_practitioner_data['notifications'] = [notification.to_dict()
                                                       for notification in medical_practitioner.user.notifications]
 

@@ -9,4 +9,5 @@ async def get_db_session():
         await db.rollback()
         raise e
     finally:
+        print("Shutting down DB")
         await db.shutdown_db()
