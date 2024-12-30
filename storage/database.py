@@ -45,6 +45,14 @@ class DBStorage:
             async with session.begin():
                 yield session
 
+    async def db_session(self) -> AsyncGenerator[AsyncSession, None]:
+        """Create and return a session object"""
+        async with self.__session_maker() as session:
+            if session is None:
+                raise RuntimeError("DatabaseSessionManager is not initialized")
+            async with session.begin():
+                yield session
+
     async def reload(self):
         """Reload the database schema"""
         async with self.__engine.begin() as conn:
