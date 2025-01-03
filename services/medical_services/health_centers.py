@@ -4,6 +4,18 @@ from storage.database import DBStorage as DB
 from schemas.default_response import DefaultResponse
 
 
+async def get_health_center_by_id(health_center_id: str, storage: DB) -> DefaultResponse:
+    """Get health center by ID"""
+    health_center = await storage.get(HealthCenter, health_center_id)
+    if not health_center:
+        raise EntityNotFoundError('Health center not found')
+    return DefaultResponse(
+        status="success",
+        message="Health center retrieved successfully",
+        data=health_center.to_dict()
+    )
+
+
 async def update_health_center(health_center_id: str, data: dict, storage: DB) -> DefaultResponse:
     """ Update a health center """
     health_center = await storage.get(HealthCenter, health_center_id)

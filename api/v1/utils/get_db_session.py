@@ -10,4 +10,4 @@ async def get_db_session():
         raise e
     finally:
         print("Shutting down DB")
-        await db.shutdown_db()
+        # await db.shutdown_db()

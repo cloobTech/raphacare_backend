@@ -72,3 +72,10 @@ class CreateConsultation(BaseModel):
     follow_up_end_date: Optional[datetime] = None
     is_prescription_included: bool = False
     prescriptions: Optional[list[Prescription]] = None
+
+
+
+
+class GetAppParams(BaseModel):
+    """query parameters"""
+    get_consultation: bool = False

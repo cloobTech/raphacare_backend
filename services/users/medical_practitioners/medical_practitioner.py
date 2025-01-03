@@ -7,8 +7,9 @@ from schemas.default_response import DefaultResponse
 from schemas.service import AddServices
 from schemas.address import HealthCenterModel
 from schemas.user import GetPractionerParams
-from services.medical_services.helper import return_service_by_id, update_return_data_with_params
+from services.medical_services.helper import return_service_by_id
 from services.users.medical_practitioners.helper import create_health_care_center, upload_file, get_medical_practitioner_id
+from utils.update_dict_with_params import update_return_data_with_params
 
 
 async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStorage, params: GetPractionerParams) -> DefaultResponse:

@@ -4,17 +4,23 @@ from models.appointment import Appointment
 from models.patient import Patient
 from models.medical_practitioner import MedicalPractitioner
 from schemas.default_response import DefaultResponse
-from schemas.consultation import CreateAppointment
+from schemas.consultation import CreateAppointment, GetAppParams
 from services.consultations.helpers import is_slot_available, determine_address_type
 from services.messaging.notifications.helper import new_pending_appointment, confirmed_rejected_completed_appointment
+from utils.update_dict_with_params import update_return_data_with_params
 
 
-async def get_appointment_by_id(appointment_id: str, storage: DB) -> DefaultResponse:
+async def get_appointment_by_id(appointment_id: str, storage: DB, params: GetAppParams) -> DefaultResponse:
     """Get appointment by id"""
+    param_dicts = params.model_dump()
+
     appointment = await storage.get(Appointment, appointment_id)
     if not appointment:
         raise EntityNotFoundError('Appointment not found')
     appointment_data = appointment.to_dict()
+
+    update_return_data_with_params(
+        param_dicts, appointment_data, appointment)
     return DefaultResponse(
         status="success",
         message="Appointment data retrieved successfully",

@@ -45,7 +45,7 @@ class Appointment(BaseModel, Base):
     medical_practitioner: Mapped['MedicalPractitioner'] = relationship(
         back_populates="appointments",  uselist=False, lazy='selectin')
     consultation: Mapped['Consultation'] = relationship(
-        back_populates="appointment",  uselist=False)
+        back_populates="appointment", lazy="selectin",  uselist=False)
     address: Mapped['Address'] = relationship(
         back_populates="appointment", lazy='selectin', uselist=False)
     health_center: Mapped['HealthCenter'] = relationship(
