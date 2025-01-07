@@ -50,7 +50,7 @@ async def update_consultation(consultation_id: str, consultation_data: dict, sto
     if not consultation_data:
         raise DataRequiredError('Data required to update consultation')
     await storage.merge(consultation)
-    consultation.update(consultation_data)
+    await consultation.update(consultation_data)
     return DefaultResponse(
         status="success",
         message="Consultation updated successfully",
