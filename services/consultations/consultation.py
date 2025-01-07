@@ -49,7 +49,7 @@ async def update_consultation(consultation_id: str, consultation_data: dict, sto
         raise EntityNotFoundError('Consultation object not found')
     if not consultation_data:
         raise DataRequiredError('Data required to update consultation')
-    storage.merge(consultation)
+    await storage.merge(consultation)
     consultation.update(consultation_data)
     return DefaultResponse(
         status="success",
@@ -63,7 +63,7 @@ async def delete_consultation(consultation_id: str, storage: DB) -> DefaultRespo
     consultation = await storage.get(Consultation, consultation_id)
     if not consultation:
         raise EntityNotFoundError('Consultation object not found')
-    storage.merge(consultation)
+    await storage.merge(consultation)
     await consultation.delete()
     return DefaultResponse(
         status="success",
