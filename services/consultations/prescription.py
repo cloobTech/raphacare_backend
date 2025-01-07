@@ -37,8 +37,8 @@ async def update_prescription(prescription_id: str, prescription_data: dict, sto
         raise EntityNotFoundError('Prescription object not found')
     if not prescription_data:
         raise DataRequiredError('Data required to update prescription')
-    storage.merge(prescription)
-    prescription.update(prescription_data)
+    await storage.merge(prescription)
+    await prescription.update(prescription_data)
     return DefaultResponse(
         status="success",
         message="Prescription updated successfully",
@@ -51,7 +51,7 @@ async def delete_prescription(prescription_id: str, storage: DB) -> DefaultRespo
     prescription = await storage.get(Prescription, prescription_id)
     if not prescription:
         raise EntityNotFoundError('Prescription object not found')
-    storage.merge(prescription)
+    await storage.merge(prescription)
     await prescription.delete()
     return DefaultResponse(
         status="success",
