@@ -1,6 +1,6 @@
 from enum import Enum as PyEnum
 from sqlalchemy import String, ForeignKey, JSON, Enum
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 from models.base_model import BaseModel, Base
 
 
@@ -29,6 +29,7 @@ class MedicalPractitioner(BaseModel, Base):
     availability: Mapped[dict] = mapped_column(JSON, nullable=True)
     is_available: Mapped[bool] = mapped_column(nullable=False, default=True)
     profile_picture_url: Mapped[str] = mapped_column(nullable=True)
+    consultation_fee: Mapped[dict] = mapped_column(JSON, nullable=True)
 
     user: Mapped['User'] = relationship(
         back_populates="medical_practitioner", lazy="selectin", uselist=False)
@@ -41,3 +42,24 @@ class MedicalPractitioner(BaseModel, Base):
         lazy="selectin", back_populates="medical_practitioner", cascade="all, delete-orphan")
     health_centers: Mapped[list['HealthCenter']] = relationship(
         back_populates="medical_practitioner", lazy="selectin", cascade="all, delete-orphan")
+
+    @validates("consultation_fee")
+    def validate_consultation_fee(self, key, value):
+        """
+        Ensure consultation_fee contains only the allowed keys and their values are valid.
+        """
+        allowed_keys = {"physical", "online", "home_service"}
+        if not isinstance(value, dict):
+            raise ValueError("consultation_fee must be a dictionary.")
+        if not allowed_keys.issuperset(value.keys()):
+            raise ValueError(
+                f"Invalid keys in consultation_fee. Allowed keys are: {
+                    allowed_keys}."
+            )
+        for key in value:
+            if not isinstance(value[key], (int, float)) or value[key] < 0:
+                raise ValueError(
+                    f"Consultation fee for {
+                        key} must be a non-negative number."
+                )
+        return value

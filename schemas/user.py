@@ -40,6 +40,12 @@ class AdminProfileDetails(BaseModel):
         use_enum_values = True
 
 
+class MedicalConsultationFee(BaseModel):
+    physical: float = 0.0
+    online: float = 0.0
+    home_service: float = 0.0
+
+
 class MedicalPractitionerProfileDetails(BaseModel):
     first_name: str
     last_name: str
@@ -52,6 +58,7 @@ class MedicalPractitionerProfileDetails(BaseModel):
     availability: dict | None = None
     is_available: bool = True
     user_type: Literal['medical_practitioner'] = 'medical_practitioner'
+    consultation_fee: MedicalConsultationFee = MedicalConsultationFee()
 
     class Config:
         use_enum_values = True
