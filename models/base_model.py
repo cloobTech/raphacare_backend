@@ -72,7 +72,7 @@ class BaseModel:
         except (TypeError, ValueError):  # Catch specific exceptions
             return False
 
-    def to_dict(self) -> dict:
+    def to_dict(self, exclude=None) -> dict:
         """
             returns a dictionary containing all keys/values of __dict__ of the instance
         """
@@ -89,6 +89,9 @@ class BaseModel:
         dict_obj.pop('_sa_instance_state', None)
         if obj_class == 'User':
             dict_obj.pop('password', None)
+        if exclude:
+            for key in exclude:
+                dict_obj.pop(key, None)
         return dict_obj
 
     async def save(self):
@@ -118,7 +121,8 @@ class BaseModel:
              # Convert date fields from strings to datetime objects
             for field in date_fields:
                 if field in updated_dict and isinstance(updated_dict[field], str):
-                    updated_dict[field] = parse_and_format_datetime(updated_dict[field])
+                    updated_dict[field] = parse_and_format_datetime(
+                        updated_dict[field])
             for key, value in updated_dict.items():
                 setattr(self, key, value)
             await self.save()

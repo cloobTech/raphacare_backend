@@ -22,17 +22,18 @@ async def get_medical_practitioner(medical_practitioner_id: str, storage: DBStor
 
     # includes user object in the return data
     medical_practitioner_data = medical_practitioner.to_dict()
-    medical_practitioner_data['user'] = medical_practitioner.user.to_dict(
+    medical_practitioner_data['user'] = medical_practitioner.user.to_dict(exclude=['notifications']
     ) if medical_practitioner.user else None
 
-    # include notifications in the return data
-    if param_dicts.get('get_notifications'):
-        medical_practitioner_data['notifications'] = [notification.to_dict()
-                                                      for notification in medical_practitioner.user.notifications]
 
     update_return_data_with_params(
         param_dicts, medical_practitioner_data, medical_practitioner)
 
+    # include notifications in the return data
+    # This line has to come after the update_return_data_with_params function
+    if param_dicts.get('get_notifications'):
+        medical_practitioner_data['notifications'] = [notification.to_dict()
+                                                      for notification in medical_practitioner.user.notifications]
     return DefaultResponse(
         status="success",
         message="Medical practitioner data retrieved successfully",

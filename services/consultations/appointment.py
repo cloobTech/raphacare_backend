@@ -71,7 +71,7 @@ async def create_appointment(data_model: CreateAppointment, storage: DB) -> Defa
     return DefaultResponse(
         status="success",
         message="Appointment created successfully",
-        data=appointment.to_dict()
+        data=appointment.to_dict(exclude=['patient', 'medical_practitioner', 'address'])
     )
 
 

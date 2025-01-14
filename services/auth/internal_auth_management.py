@@ -57,8 +57,7 @@ class LocalAuthStrategy(AuthStrategy):
         return DefaultResponse(
             status="success",
             message="User registered successfully",
-            data=new_user_profile.to_dict()
-        )
+            data=new_user_profile.to_dict())
 
     async def verify_email(self, token_input: VerifyEmailTokenInput, storage: DBStorage) -> TokenResponse:
         """Verify a user's email"""
