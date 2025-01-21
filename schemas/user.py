@@ -89,3 +89,9 @@ class GetPractionerParams(BaseModel):
     get_services: bool = False
     get_appointments: bool = False
     get_notifications: bool = False
+
+
+class GetPatientParams(BaseModel):
+    """Get Patient Params"""
+    get_notifications: bool = False
+    get_appointments: bool = False

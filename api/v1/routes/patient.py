@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, File, Form, Uploa
 from errors.custome_errors import EntityNotFoundError, DataRequiredError, InvalidFileError
 from api.v1.utils.get_db_session import get_db_session
 from schemas.default_response import DefaultResponse
+from schemas.user import GetPractionerParams
 from services.users.patients.patient import get_patient_by_id, get_all_patients, update_patient_info, generic_file_upload
 
 
@@ -9,10 +10,10 @@ router = APIRouter(tags=['Patient'], prefix='/api/v1/patients')
 
 
 @router.get('/{patient_id}', status_code=status.HTTP_200_OK, response_model=DefaultResponse)
-async def get_patient_by_id_route(patient_id: str, storage=Depends(get_db_session)):
+async def get_patient_by_id_route(patient_id: str, storage=Depends(get_db_session), params: GetPractionerParams = Depends()):
     """Get patient by id"""
     try:
-        patient = await get_patient_by_id(patient_id, storage)
+        patient = await get_patient_by_id(patient_id, storage, params=params)
         return patient
     except EntityNotFoundError as e:
         raise HTTPException(
