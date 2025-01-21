@@ -4,7 +4,7 @@
 
 ## Description
 
-This endpoint handles user authentication using different authentication strategies (local, Google, or Facebook).
+This endpoint handles user authentication using different authentication strategies (local, Google, or Facebook)...
 
 ## Request
 
