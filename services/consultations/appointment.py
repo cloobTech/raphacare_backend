@@ -37,8 +37,10 @@ async def get_all_appointments(storage: DB) -> DefaultResponse:
             message="No appointments found",
             data=[]
         )
-    appointments_data = [appointment.to_dict()
-                         for appointment in appointments.values()]
+    appointments_data = [appointment.to_dict([
+        'patient', 'medical_practitioner', 'address'
+    ])
+        for appointment in appointments.values()]
     return DefaultResponse(
         status="success",
         message="Appointments data retrieved successfully",
@@ -71,7 +73,8 @@ async def create_appointment(data_model: CreateAppointment, storage: DB) -> Defa
     return DefaultResponse(
         status="success",
         message="Appointment created successfully",
-        data=appointment.to_dict(exclude=['patient', 'medical_practitioner', 'address'])
+        data=appointment.to_dict(
+            exclude=['patient', 'medical_practitioner', 'address'])
     )
 
 
@@ -90,5 +93,9 @@ async def update_appointment_info(appointment_id: str, data: dict, storage: DB) 
     return DefaultResponse(
         status="success",
         message="Appointment data updated successfully",
-        data=appointment.to_dict()
+        data=appointment.to_dict(
+            [
+               'patient', 'medical_practitioner', 'address'
+            ]
+        )
     )
