@@ -113,7 +113,7 @@ async def reset_password(data: VerifyEmailTokenInput, storage: DBStorage) -> Def
     if not user:
         raise InvalidTokenError("Invalid Token")
     # tokens valid for 2 minutes
-    if datetime.now() - user.token_created_at > timedelta(minutes=3):
+    if datetime.now(timezone.utc) - user.token_created_at.replace(tzinfo=timezone.utc) > timedelta(minutes=3):
         raise TokenExpiredError("Token Expired")
 
     await storage.merge(user)
