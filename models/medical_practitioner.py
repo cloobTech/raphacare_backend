@@ -12,6 +12,8 @@ class PractitionerType(str, PyEnum):
     DRUG_REFILL = "drug_refill"
     EMERGENCY = "emergency"
     CLEANING_SERVICE = "cleaning_service"
+        HOSPITAL_SERVICE = "hospital_service"
+
 
 
 class MedicalPractitioner(BaseModel, Base):
