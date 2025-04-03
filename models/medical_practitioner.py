@@ -9,6 +9,9 @@ class PractitionerType(str, PyEnum):
     DOCTOR = "doctor"
     NURSE = "nurse"
     COMMUNITY_HEALTH = "community_health"
+    DRUG_REFILL = "drug_refill"
+    EMERGENCY = "emergency"
+    CLEANING_SERVICE = "cleaning_service"
 
 
 class MedicalPractitioner(BaseModel, Base):
